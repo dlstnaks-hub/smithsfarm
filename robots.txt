@@ -1,0 +1,27 @@
+# Smith's Farm — 검색엔진 및 AI 크롤러 허용 (SEO · GEO)
+User-agent: *
+Allow: /
+
+# AI 검색/생성 엔진 크롤러 명시 허용 (GEO)
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Yeti
+Allow: /
+
+Sitemap: https://smithsfarm.vercel.app/sitemap.xml
