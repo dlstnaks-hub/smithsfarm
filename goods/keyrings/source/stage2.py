@@ -1,7 +1,7 @@
 # trace a cut line ~1.2mm outside the artwork, then write print SVGs and data for the 3D page
 import json, math
 from PIL import Image, ImageFilter
-import art
+import art, sized
 PX = 10; MARGIN = 1.2
 
 def trace(mask, W, H):
@@ -36,7 +36,8 @@ def dp(pts, eps):
     return [pts[0], pts[-1]]
 
 out = {}
-for name, k in (('scarecrow', art.SCARECROW), ('octopus', art.OCTOPUS)):
+SIZED = {n: sized.get(n) for n in ('scarecrow', 'octopus')}
+for name, k in SIZED.items():
     a = Image.open(f'{name}_alpha.png').getchannel('A').point(lambda v: 255 if v > 20 else 0)
     r = int(MARGIN*PX)
     m = a.filter(ImageFilter.MaxFilter(2*r+1))
@@ -46,13 +47,22 @@ for name, k in (('scarecrow', art.SCARECROW), ('octopus', art.OCTOPUS)):
     pts = dp(pts[:h2+1], 0.35)[:-1] + dp(pts[h2:] + [pts[0]], 0.35)[:-1]
     poly = [(round(x/PX, 3), round(y/PX, 3)) for x, y in pts]
     d = 'M' + ' L'.join(f'{x} {y}' for x, y in poly) + ' Z'
-    k['outline_svg'] = d; k['poly'] = poly
-    print(name, len(poly), 'points')
+    # crop the artboard to the cut line (+0.3mm) so the file size equals the product size
+    PAD = 0.1
+    mx, my = min(x for x,_ in poly), min(y for _,y in poly)
+    poly = [(round(x-mx+PAD, 3), round(y-my+PAD, 3)) for x, y in poly]
+    k['w'] = round(max(x for x,_ in poly) + PAD, 2); k['h'] = round(max(y for _,y in poly) + PAD, 2)
+    hx, hy, hr = k['hole']; k['hole'] = (round(hx-mx+PAD, 3), round(hy-my+PAD, 3), hr)
+    k['shift'] = (PAD-mx, PAD-my)
+    k['outline_svg'] = 'M' + ' L'.join(f'{x} {y}' for x, y in poly) + ' Z'; k['poly'] = poly
+    cw = max(x for x,_ in poly)-min(x for x,_ in poly); ch = max(y for _,y in poly)-min(y for _,y in poly)
+    print(name, len(poly), 'points', f'cut {cw:.1f} x {ch:.1f} = {cw+ch:.1f}mm', 'artboard', k['w'], k['h'])
 # carrot outline is the original vector path (already in PDF y-up coordinates)
-for name, k in (('scarecrow', art.SCARECROW), ('octopus', art.OCTOPUS), ('carrot', art.CARROT)):
+for name, k in (('scarecrow', SIZED['scarecrow']), ('octopus', SIZED['octopus']), ('carrot', dict(art.CARROT))):
     w, h = k['w'], k['h']
     border = f'<path d="{k["outline_svg"]}" fill="#fdf8ee"/>' if 'outline_svg' in k else ''
-    svg = f'<svg xmlns="http://www.w3.org/2000/svg" data-w="{w}" data-h="{h}" width="{w}mm" height="{h}mm" viewBox="0 0 {w} {h}">{border}{k["art"]}</svg>'
+    body = f'<g transform="translate({k["shift"][0]:.3f} {k["shift"][1]:.3f})">{k["art"]}</g>' if 'shift' in k else k['art']
+    svg = f'<svg xmlns="http://www.w3.org/2000/svg" data-w="{w}" data-h="{h}" width="{w}mm" height="{h}mm" viewBox="0 0 {w} {h}">{border}{body}</svg>'
     open(f'{name}_print.svg', 'w').write(svg)
     out[name] = dict(w=w, h=h, hole=k['hole'], poly=k.get('poly'), svg=svg)
 json.dump(out, open('keyrings.json', 'w'))

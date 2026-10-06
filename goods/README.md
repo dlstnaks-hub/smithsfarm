@@ -10,8 +10,10 @@
 | `diary/print/스씨네그림일기_A5_테스트인쇄용_A4한장.pdf` | 집 프린터 시험 출력: A4 가로 한 장에 표지·속지, 가운데를 자르면 A5 두 장 |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용.pdf` | 집 프린터 시험 출력: 쪽마다 A4 한 장, 자를 선 바깥까지 색이 차서 흰 테두리 없음 |
 | `keyrings/print/ohprint_keyring_03_carrot.pdf` | 당근 키링 (보내 주신 원본, 30×56mm) |
-| `keyrings/print/ohprint_keyring_04_scarecrow.pdf` | 허수아비 키링 (48×58mm) |
-| `keyrings/print/ohprint_keyring_05_octopus.pdf` | 문어 "씨!" 키링 (48×50mm) |
+| `keyrings/print/ohprint_keyring_04_scarecrow.pdf` | 허수아비 키링 (40.7×48.7mm) |
+| `keyrings/print/ohprint_keyring_05_octopus.pdf` | 문어 "씨!" 키링 (43.2×45.1mm) |
+
+세 키링 모두 가로+세로 90mm 이하 구간이에요(itension 스마트스토어 사이즈 기준). 허수아비는 그림만 줄이고 고리 구멍 3.4mm와 테두리 1.2mm는 그대로예요. 대지는 칼선에 딱 맞게 잘라 두었어요.
 
 키링 파일은 모두 오프린트미 형식이에요: 화이트(ocW) · 인쇄(ocP) · 칼선(ocC, 마젠타 0.05mm) 레이어.
 
@@ -30,5 +32,5 @@
 - `diary/source/diary_print.html` — 그림일기 디자인 원본 (SVG, mm 단위). 고친 뒤 `run.sh`(인쇄소용·A4 한 장 시험용), `make_test.py` + `make_test.mjs`(쪽마다 A4 시험용), `run2.sh`(3D 그림 갱신)로 다시 뽑아요.
   필요한 것: Node + Playwright, Python + pypdf + Pillow, poppler(pdftoppm), 그리고 `fonts/` 폴더에 웹폰트 —
   `npm pack @fontsource/gowun-batang@5 @fontsource/noto-sans-kr@5` 후 압축을 풀어 `fonts/fontsource-…-5.3.0/package/` 구조로 두면 돼요.
-- `keyrings/source/art.py` — 키링 그림 원본(당근·문어·허수아비). `stage1.py` → `node render.mjs png scarecrow octopus` → `stage2.py`(칼선 자동 추출) → `node render.mjs pdf scarecrow octopus carrot` → `stage3.py`(오프린트미 레이어 PDF) 순서.
+- `keyrings/source/art.py` — 키링 그림 원본(당근·문어·허수아비). 크기는 `sized.py`에서 정해요. `stage1.py` → `node render.mjs png scarecrow octopus` → `stage2.py`(칼선 자동 추출) → `node render.mjs pdf scarecrow octopus carrot` → `stage3.py`(오프린트미 레이어 PDF) 순서.
 - `design-canvas/` — 굿즈 시안 캔버스(브랜드 키트, 에코백, 스티커, 소스 라벨, 키즈 매트) 원본.
