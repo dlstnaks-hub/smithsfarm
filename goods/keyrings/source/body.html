@@ -69,9 +69,9 @@
   <section class="spec" aria-labelledby="spec-h">
     <h2 id="spec-h">제작 사양</h2>
     <dl>
-      <dt>당근</dt><dd>30 × 56mm (가로+세로 86mm, 90mm 이하 구간) · 보내 주신 파일 그대로, 칼선 끝까지 꽉 찬 인쇄</dd>
-      <dt>문어 “씨!”</dt><dd>43.2 × 45.1mm (88.3mm, 90mm 이하 구간) · 그림 바깥 1.2mm 크림색 테두리, 머리 위 고리 탭</dd>
-      <dt>허수아비</dt><dd>40.7 × 48.7mm (89.4mm, 90mm 이하 구간) · 그림 바깥 1.2mm 크림색 테두리, 밀짚모자 꼭대기에 고리 구멍</dd>
+      <dt>당근</dt><dd>45.2 × 84.3mm (가로+세로 129.5mm) · 보내 주신 파일을 비율 그대로 키움, 칼선 끝까지 꽉 찬 인쇄</dd>
+      <dt>문어 “씨!”</dt><dd>63.4 × 66.2mm (129.6mm) · 그림 바깥 1.2mm 크림색 테두리, 머리 위 고리 탭</dd>
+      <dt>허수아비</dt><dd>58.9 × 70.8mm (129.7mm) · 그림 바깥 1.2mm 크림색 테두리, 밀짚모자 꼭대기에 고리 구멍</dd>
       <dt>공통</dt><dd id="spec-common">투명 아크릴 3mm, 뒷면 인쇄 + 화이트, 고리 구멍 지름 3.4mm, 은색 O링 + 지름 25mm 키링</dd>
     </dl>
     <p class="note">문어와 허수아비도 당근 파일과 같은 오프린트미 형식(화이트 · 인쇄 · 칼선 레이어)으로 만들었어요. 크기는 업체 규격에 맞춰 조정할 수 있어요.</p>
@@ -98,7 +98,7 @@ const CARROT = [['M',2,38],['C',0,44,1,50,5,52],['C',7,53,9,51,10,48],['L',10,52
 const PX = 40;
 function outlineOnCanvas(g, k){
   if(k.poly){ g.beginPath(); k.poly.forEach(([x,y],i)=> i ? g.lineTo(x,y) : g.moveTo(x,y)); g.closePath(); }
-  else { g.save(); g.translate(0, k.h); g.scale(1,-1); g.beginPath();
+  else { g.save(); g.translate(0, k.h); g.scale(k.scale||1, -(k.scale||1)); g.beginPath();
     for(const [c,...a] of CARROT){ if(c==='M') g.moveTo(a[0],a[1]); else if(c==='L') g.lineTo(a[0],a[1]); else g.bezierCurveTo(...a); }
     g.closePath(); g.restore(); }
 }
@@ -121,7 +121,7 @@ function loadArt(k){
 function shapeOf(k){
   let s;
   if(k.poly){ s = new THREE.Shape(k.poly.map(([x,y])=> new THREE.Vector2(x, k.h - y))); }
-  else { s = new THREE.Shape(); for(const [c,...a] of CARROT){ if(c==='M') s.moveTo(a[0],a[1]); else if(c==='L') s.lineTo(a[0],a[1]); else s.bezierCurveTo(...a); } }
+  else { const sc = k.scale||1; s = new THREE.Shape(); for(const [c,...r] of CARROT){ const a = r.map(v=>v*sc); if(c==='M') s.moveTo(a[0],a[1]); else if(c==='L') s.lineTo(a[0],a[1]); else s.bezierCurveTo(...a); } }
   const [hx,hy,hr] = k.hole;
   s.holes.push(new THREE.Path().absarc(hx, k.h - hy, hr, 0, Math.PI*2, true));
   return s;
@@ -260,7 +260,7 @@ function buildOne(name){
 function build(){
   world.clear(); hangs = [];
   const list = state.pick === 'all' ? ORDER : [state.pick];
-  const gap = 58;
+  const gap = 78;
   list.forEach((n, i)=>{
     const h = buildOne(n);
     h.position.set((i - (list.length-1)/2) * gap, 0, 0);
@@ -290,7 +290,7 @@ function build(){
     });
   }
   fit();
-  const dims = list.map(n=> `${NAMES[n]} ${KEYRINGS[n].w}×${KEYRINGS[n].h}mm`).join(' · ');
+  const dims = list.map(n=> `${NAMES[n]} ${(+KEYRINGS[n].w).toFixed(1)}×${(+KEYRINGS[n].h).toFixed(1)}mm`).join(' · ');
   document.getElementById('dims').textContent = dims;
   document.getElementById('spec-common').textContent =
     `${state.mat==='frost'?'무광':'투명'} 아크릴 ${state.thick}mm, 뒷면 인쇄 + 화이트, 고리 구멍 지름 3.4mm, ${state.metal==='gold'?'금색':'은색'} O링 + 지름 25mm 키링`;
@@ -332,7 +332,7 @@ function setView(v){
 viewEl.addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) setView(b.dataset.v); });
 function fit(){
   // keep every keyring in frame whatever the stage shape
-  const needW = state.pick === 'all' ? 178 : 70, needH = 108, tan = Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  const needW = state.pick === 'all' ? 240 : 95, needH = 150, tan = Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
   camera.position.set(0, 0, Math.max(needH/(2*tan), needW/(2*tan*camera.aspect)));
 }
 function resize(){

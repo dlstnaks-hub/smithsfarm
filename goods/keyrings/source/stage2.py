@@ -58,11 +58,11 @@ for name, k in SIZED.items():
     cw = max(x for x,_ in poly)-min(x for x,_ in poly); ch = max(y for _,y in poly)-min(y for _,y in poly)
     print(name, len(poly), 'points', f'cut {cw:.1f} x {ch:.1f} = {cw+ch:.1f}mm', 'artboard', k['w'], k['h'])
 # carrot outline is the original vector path (already in PDF y-up coordinates)
-for name, k in (('scarecrow', SIZED['scarecrow']), ('octopus', SIZED['octopus']), ('carrot', dict(art.CARROT))):
+for name, k in (('scarecrow', SIZED['scarecrow']), ('octopus', SIZED['octopus']), ('carrot', sized.get('carrot'))):
     w, h = k['w'], k['h']
     border = f'<path d="{k["outline_svg"]}" fill="#fdf8ee"/>' if 'outline_svg' in k else ''
     body = f'<g transform="translate({k["shift"][0]:.3f} {k["shift"][1]:.3f})">{k["art"]}</g>' if 'shift' in k else k['art']
     svg = f'<svg xmlns="http://www.w3.org/2000/svg" data-w="{w}" data-h="{h}" width="{w}mm" height="{h}mm" viewBox="0 0 {w} {h}">{border}{body}</svg>'
     open(f'{name}_print.svg', 'w').write(svg)
-    out[name] = dict(w=w, h=h, hole=k['hole'], poly=k.get('poly'), svg=svg)
+    out[name] = dict(w=w, h=h, hole=k['hole'], poly=k.get('poly'), svg=svg, scale=k.get('scale', 1))
 json.dump(out, open('keyrings.json', 'w'))

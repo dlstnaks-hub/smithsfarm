@@ -3,11 +3,11 @@ from pypdf import PdfReader, PdfWriter
 from pypdf.generic import RectangleObject, DecodedStreamObject, NameObject, DictionaryObject
 import json, art
 MM = 72/25.4
-TEMPLATE = '../print/ohprint_keyring_03_carrot.pdf'
+TEMPLATE = '/root/.claude/uploads/eb5eda96-acad-5762-89cf-9d74948ca0d7/86558b46-ohprint_keyring_03_carrot.pdf'
 data = json.load(open('keyrings.json'))
 
 def ring_ops(poly, h, hole):
-    o = [f'{x:.3f} {h-y:.3f} {"m" if i==0 else "l"}' for i,(x,y) in enumerate(poly)] + ['h']
+    o = [f'{x:.3f} {h-y:.3f} {"m" if i==0 else "l"}' for i,(x,y) in enumerate(poly)] + (['h'] if poly else [])
     hx, hy, hr = hole; hy = h - hy; k = 0.5523*hr
     o += [f'{hx+hr:.3f} {hy:.3f} m', f'{hx+hr:.3f} {hy+k:.3f} {hx+k:.3f} {hy+hr:.3f} {hx:.3f} {hy+hr:.3f} c',
           f'{hx-k:.3f} {hy+hr:.3f} {hx-hr:.3f} {hy+k:.3f} {hx-hr:.3f} {hy:.3f} c',
@@ -15,9 +15,27 @@ def ring_ops(poly, h, hole):
           f'{hx+k:.3f} {hy-hr:.3f} {hx+hr:.3f} {hy-k:.3f} {hx+hr:.3f} {hy:.3f} c', 'h']
     return ' '.join(o)
 
-for name, num in (('scarecrow', '04'), ('octopus', '05')):
+import re
+def carrot_ops(sc, hole, h):
+    # the original carrot outline (PDF y-up) with every coordinate scaled, then the unscaled hole
+    toks = re.findall(r'[MCLZ]|-?[\d.]+', art.CARROT_OUT); o = []; cmd = None; nums = []
+    def flush():
+        if cmd == 'M': o.append(f'{nums[0]*sc:.3f} {nums[1]*sc:.3f} m')
+        elif cmd == 'L': o.append(f'{nums[0]*sc:.3f} {nums[1]*sc:.3f} l')
+        elif cmd == 'C': o.append(' '.join(f'{v*sc:.3f}' for v in nums) + ' c')
+    for t in toks:
+        if t in 'MCLZ':
+            if cmd: flush()
+            cmd, nums = t, []
+            if t == 'Z': o.append('h'); cmd = None
+        else: nums.append(float(t))
+    if cmd: flush()
+    ring = ring_ops([], h, hole)
+    return ' '.join(o) + ' ' + ring.lstrip(' h')
+
+for name, num in (('carrot', '03'), ('scarecrow', '04'), ('octopus', '05')):
     d = data[name]; w, h = d['w'], d['h']
-    path = ring_ops(d['poly'], h, d['hole'])
+    path = carrot_ops(d['scale'], d['hole'], h) if name == 'carrot' else ring_ops(d['poly'], h, d['hole'])
     tpl = PdfReader(TEMPLATE); prn = PdfReader(f'{name}_print.pdf').pages[0]
     page = tpl.pages[0]
     top = float(prn.mediabox.height); y0 = top - h*MM
@@ -42,5 +60,5 @@ for name, num in (('scarecrow', '04'), ('octopus', '05')):
             res[NameObject(key)] = val.clone(w_) if hasattr(val, 'clone') else val
     box = RectangleObject([0, 0, w*MM, h*MM])
     for b in ('/MediaBox', '/CropBox', '/BleedBox', '/TrimBox', '/ArtBox'): p[NameObject(b)] = box
-    w_.write(f'out/ohprint_keyring_{num}_{name}.pdf')
+    w_.write(f'out/ohprint_keyring_{num}_{name}_130.pdf')
     print(name, w, h)
