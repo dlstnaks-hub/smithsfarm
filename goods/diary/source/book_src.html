@@ -1,0 +1,319 @@
+<title>스씨네 그림일기 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+/* Layout: desk-top product viewer with the book on it, option chips beside, print spec underneath */
+:root{
+  --bg:#f4efe4; --surface:#fffdf8; --fg:#2a2418; --muted:#6a604e; --line:#ddd3bf;
+  --accent:#2f6b3a; --accent-fg:#ffffff; --stage:#e7dcc6;
+  --display:'Gowun Batang', 'Nanum Myeongjo', Georgia, serif;
+  --body:'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17150f; --surface:#211e16; --fg:#f0eadc; --muted:#b3a88f; --line:#3a3427;
+  --accent:#8cc79a; --accent-fg:#10200f; --stage:#2a251b; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17150f; --surface:#211e16; --fg:#f0eadc; --muted:#b3a88f; --line:#3a3427;
+  --accent:#8cc79a; --accent-fg:#10200f; --stage:#2a251b; color-scheme:dark }
+body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:15px; line-height:1.55}
+.wrap{max-width:1040px; margin:0 auto; padding-inline:16px; padding-block:24px 48px; display:grid; gap:20px}
+header{display:grid; gap:4px}
+.eyebrow{font-size:12px; letter-spacing:.14em; font-weight:600; color:var(--accent)}
+h1{font-family:var(--display); font-weight:700; font-size:clamp(28px,6vw,42px); line-height:1.1; margin:0; text-wrap:balance}
+header p{margin:0; color:var(--muted); max-width:64ch}
+.main{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:20px; align-items:start}
+@media (max-width:780px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative; aspect-ratio:5/4; max-width:100%; border-radius:18px; overflow:hidden; background:var(--stage); border:1px solid var(--line); touch-action:none; cursor:grab}
+@media (max-width:780px){.stage{aspect-ratio:4/5}}
+.stage:active{cursor:grabbing}
+.stage canvas{display:block; width:100%; height:100%}
+.hint{position:absolute; left:12px; bottom:12px; font-size:12px; color:#fff; background:rgba(30,24,14,.55); padding:4px 10px; border-radius:99px; pointer-events:none}
+.err{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; text-align:center; color:var(--muted)}
+.panel{display:grid; gap:16px; min-width:0}
+fieldset{border:0; margin:0; padding:0; display:grid; gap:8px}
+legend{font-size:12px; letter-spacing:.1em; font-weight:600; color:var(--muted); padding:0; margin-bottom:8px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chips button{font:inherit; font-size:14px; min-height:44px; padding:0 14px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--fg); cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--accent); color:var(--accent-fg); border-color:var(--accent)}
+.chips button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.spec{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; display:grid; gap:10px}
+.spec h2{font-size:15px; margin:0}
+.spec dl{display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 16px; margin:0; font-size:14px}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0; font-variant-numeric:tabular-nums}
+.note{font-size:13px; color:var(--muted); margin:0}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SMITH'S FARM GOODS · 그림일기 실물 미리보기</div>
+    <h1>스씨네 그림일기</h1>
+    <p>새로 만든 인쇄용 PDF의 표지와 속지를 A5 크기 그대로 책상 위에 올려 봤어요. 드래그해서 돌려 보고, 표지를 열거나 속지를 넘겨 보세요. 휠이나 두 손가락으로 확대할 수 있어요.</p>
+  </header>
+
+  <div class="main">
+    <div class="stage" id="stage" aria-label="그림일기 3D 미리보기. 드래그해서 돌릴 수 있어요">
+      <div class="hint">드래그해서 돌려 보기</div>
+    </div>
+
+    <div class="panel">
+      <fieldset>
+        <legend>펼치기</legend>
+        <div class="chips">
+          <button type="button" id="btn-cover" aria-pressed="false">표지 열기</button>
+          <button type="button" id="btn-sheet" aria-pressed="false">속지 한 장 넘기기</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>제본</legend>
+        <div class="chips" id="bind">
+          <button type="button" data-v="glue" aria-pressed="true">떡제본(풀)</button>
+          <button type="button" data-v="spring" aria-pressed="false">스프링</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>속지 장수</legend>
+        <div class="chips" id="sheets">
+          <button type="button" data-v="20" aria-pressed="false">20장</button>
+          <button type="button" data-v="30" aria-pressed="true">30장</button>
+          <button type="button" data-v="50" aria-pressed="false">50장</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>표지 코팅</legend>
+        <div class="chips" id="coat">
+          <button type="button" data-v="matte" aria-pressed="true">무광</button>
+          <button type="button" data-v="gloss" aria-pressed="false">유광</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>보는 방향</legend>
+        <div class="chips" id="view">
+          <button type="button" data-v="angle" aria-pressed="true">비스듬히</button>
+          <button type="button" data-v="top" aria-pressed="false">위에서</button>
+          <button type="button" data-v="side" aria-pressed="false">옆에서</button>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <section class="spec" aria-labelledby="spec-h">
+    <h2 id="spec-h">인쇄 사양 (새 PDF 기준)</h2>
+    <dl>
+      <dt>판형</dt><dd>A5 148 × 210mm, 파일은 재단 여백 포함 154 × 216mm</dd>
+      <dt>구성</dt><dd id="spec-pages">표지 1장 + 속지 30장 (속지는 같은 면 반복)</dd>
+      <dt>두께</dt><dd id="spec-thick">약 3.6mm (표지 0.3mm × 2, 속지 0.1mm × 30)</dd>
+      <dt>제본</dt><dd id="spec-bind">왼쪽 떡제본(풀 제본)</dd>
+      <dt>표지</dt><dd id="spec-coat">크라프트 색 인쇄 + 무광 코팅</dd>
+    </dl>
+    <p class="note">장수, 제본, 코팅은 아직 정해지지 않아 많이 쓰는 값으로 가정했어요. 속지 두께는 모조지 100g(약 0.1mm) 기준이에요. 색은 화면용이라 실제 인쇄색과 조금 다를 수 있어요.</p>
+  </section>
+</div>
+
+<script>/*TEX*/</script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const stage = document.getElementById('stage');
+const W = 148, D = 210;
+const state = { sheets:30, bind:'glue', coat:'matte', cover:false, sheet:false, view:'angle' };
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias:true }); }
+catch(e){ stage.insertAdjacentHTML('beforeend','<div class="err">이 기기에서는 3D 미리보기를 열 수 없어요. 다른 브라우저나 컴퓨터에서 열어 주세요.</div>'); throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#cdb48c');
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const sun = new THREE.DirectionalLight(0xfff3e2, 1.9);
+sun.position.set(-160, 420, 220); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left:-320, right:320, top:320, bottom:-320, near:50, far:1000 });
+sun.shadow.radius = 6; sun.shadow.bias = -0.0004;
+scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xfff8ec, 0x7a5a3a, 0.35));
+
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+const loader = new THREE.TextureLoader();
+function tex(src){ const t = loader.load(src); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso; return t; }
+const coverTex = tex(COVER_IMG), pageTex = tex(PAGE_IMG);
+
+// desk
+function deskTexture(){
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 1024; const g = c.getContext('2d');
+  g.fillStyle = '#b8936a'; g.fillRect(0,0,1024,1024);
+  for(let i=0;i<260;i++){
+    const y = Math.random()*1024;
+    g.strokeStyle = `rgba(${90+Math.random()*40|0},${58+Math.random()*25|0},${30+Math.random()*15|0},${.08+Math.random()*.16})`;
+    g.lineWidth = .6 + Math.random()*2.4; g.beginPath(); g.moveTo(0,y);
+    for(let x=0;x<=1024;x+=24) g.lineTo(x, y + Math.sin(x/120 + i*.7)*5 + Math.sin(x/37+i)*1.2);
+    g.stroke();
+  }
+  for(let k=1;k<4;k++){ g.fillStyle='rgba(60,38,20,.25)'; g.fillRect(0, k*256-1, 1024, 2); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2,2); t.anisotropy = maxAniso; return t;
+}
+const desk = new THREE.Mesh(new THREE.PlaneGeometry(1600,1600), new THREE.MeshStandardMaterial({ map:deskTexture(), roughness:.62 }));
+desk.rotation.x = -Math.PI/2; desk.receiveShadow = true; scene.add(desk);
+
+// crayons for scale and context
+function crayon(color, x, z, ry){
+  const g = new THREE.Group();
+  const wax = new THREE.MeshStandardMaterial({ color, roughness:.55 });
+  const wrap = new THREE.MeshStandardMaterial({ color:'#f6efe0', roughness:.85 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(4.5,4.5,70,24), wax);
+  const label = new THREE.Mesh(new THREE.CylinderGeometry(4.65,4.65,48,24), wrap);
+  const stripe = new THREE.Mesh(new THREE.CylinderGeometry(4.7,4.7,6,24), wax); stripe.position.y = 10;
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(4.5,9,24), wax); tip.position.y = 39.5;
+  [body,label,stripe,tip].forEach(m=>{ m.castShadow = true; g.add(m); });
+  g.rotation.set(0, ry, Math.PI/2); g.position.set(x, 4.6, z); scene.add(g);
+}
+crayon('#c4532d', 110, 172, .22); crayon('#2f6b3a', 128, 190, .08); crayon('#e3a23a', 96, 206, .3);
+
+// book
+const book = new THREE.Group(); scene.add(book);
+const paperSide = new THREE.MeshStandardMaterial({ color:'#efe9dc', roughness:.95 });
+const paperWhite = new THREE.MeshStandardMaterial({ color:'#fbf8f0', roughness:.9 });
+const kraft = new THREE.MeshStandardMaterial({ color:'#d3ba8f', roughness:.85 });
+let coverMat;
+const coverHinge = new THREE.Group(), sheetHinge = new THREE.Group();
+let coverAngle = 0, sheetAngle = 0, baseSheetY = 0;
+
+function topPlane(texture, mat){
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(W, D), mat || new THREE.MeshStandardMaterial({ map:texture, roughness:.88 }));
+  m.rotation.x = -Math.PI/2; m.receiveShadow = true; return m;
+}
+function buildBook(){
+  book.clear(); coverHinge.clear(); sheetHinge.clear();
+  const C = 0.3, P = 0.1, N = state.sheets, block = N*P;
+  const spring = state.bind === 'spring';
+  coverMat = new THREE.MeshPhysicalMaterial({ map:coverTex, roughness: state.coat==='gloss' ? .28 : .72,
+    clearcoat: state.coat==='gloss' ? .8 : 0, clearcoatRoughness:.12 });
+  const xs = -W/2;
+  // back cover
+  const back = new THREE.Mesh(new THREE.BoxGeometry(W, C, D), kraft); back.position.set(0, C/2, 0);
+  back.castShadow = back.receiveShadow = true; book.add(back);
+  // page block (minus the turnable top sheet)
+  const blockH = block - P;
+  const blk = new THREE.Mesh(new THREE.BoxGeometry(W-0.6, blockH, D-0.6), [paperSide,paperSide,paperWhite,paperWhite,paperSide,paperSide]);
+  blk.position.set(0.3, C + blockH/2, 0); blk.castShadow = blk.receiveShadow = true; book.add(blk);
+  const under = topPlane(pageTex); under.position.set(0.3, C + blockH + 0.01, 0); under.scale.set((W-0.6)/W, (D-0.6)/D, 1); book.add(under);
+  // turnable top sheet
+  const sheetY = C + blockH;
+  baseSheetY = sheetY; sheetHinge.position.set(xs + 0.3, sheetY, 0);
+  const sh = new THREE.Mesh(new THREE.BoxGeometry(W-0.6, P, D-0.6), [paperSide,paperSide,paperWhite,paperWhite,paperSide,paperSide]);
+  sh.position.set((W-0.6)/2, P/2, 0); sh.castShadow = sh.receiveShadow = true; sheetHinge.add(sh);
+  const shTop = topPlane(pageTex); shTop.scale.set((W-0.6)/W, (D-0.6)/D, 1); shTop.position.set((W-0.6)/2, P + 0.01, 0); sheetHinge.add(shTop);
+  book.add(sheetHinge);
+  // front cover
+  const coverY = C + block;
+  coverHinge.position.set(xs, coverY, 0);
+  const fc = new THREE.Mesh(new THREE.BoxGeometry(W, C, D), kraft); fc.position.set(W/2, C/2, 0); fc.castShadow = fc.receiveShadow = true;
+  const fcTop = topPlane(null, coverMat); fcTop.position.set(W/2, C + 0.02, 0);
+  coverHinge.add(fc, fcTop); book.add(coverHinge);
+  // glue spine strip or spring rings
+  if(spring){
+    const metal = new THREE.MeshStandardMaterial({ color:'#c9ccd1', metalness:1, roughness:.25 });
+    const total = coverY + C, R = Math.max(4.2, total/2 + 1.6), pitch = 25.4/3, count = Math.floor((D-12)/pitch);
+    for(let i=0;i<count;i++){
+      const z = -((count-1)*pitch)/2 + i*pitch;
+      [-1.1, 1.1].forEach(dz=>{
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(R, .45, 10, 40), metal);
+        ring.position.set(xs - R + 5, total/2, z + dz); ring.castShadow = true; book.add(ring);
+      });
+    }
+  } else {
+    const glue = new THREE.Mesh(new THREE.BoxGeometry(0.6, coverY + C, D), kraft);
+    glue.position.set(xs - 0.3, (coverY + C)/2, 0); glue.castShadow = true; book.add(glue);
+  }
+  book.position.set(-20, 0, 0);
+  // spec text
+  const thick = (2*C + N*P).toFixed(1);
+  document.getElementById('spec-pages').textContent = `표지 1장 + 속지 ${N}장 (속지는 같은 면 반복)`;
+  document.getElementById('spec-thick').textContent = `약 ${thick}mm (표지 0.3mm × 2, 속지 0.1mm × ${N})`;
+  document.getElementById('spec-bind').textContent = spring ? '왼쪽 스프링 (3:1 피치 트윈링, 펼쳤을 때 평평하게 놓여요)' : '왼쪽 떡제본(풀 제본)';
+  document.getElementById('spec-coat').textContent = `크라프트 색 인쇄 + ${state.coat==='gloss'?'유광':'무광'} 코팅`;
+}
+
+// ---------- camera orbit ----------
+const camera = new THREE.PerspectiveCamera(32, 5/4, 5, 4000);
+const target = new THREE.Vector3(0, 0, 0);
+const views = { angle:{az:-.3, el:.98, dist:740}, top:{az:0, el:1.52, dist:700}, side:{az:-1.15, el:.42, dist:560} };
+let az = views.angle.az, el = views.angle.el, dist = views.angle.dist, goal = { ...views.angle };
+function placeCamera(){
+  camera.position.set(target.x + dist*Math.cos(el)*Math.sin(az), target.y + dist*Math.sin(el), target.z + dist*Math.cos(el)*Math.cos(az));
+  camera.lookAt(target);
+}
+const pointers = new Map(); let pinch0 = 0, dist0 = 0;
+stage.addEventListener('pointerdown', e=>{ pointers.set(e.pointerId, [e.clientX, e.clientY]); stage.setPointerCapture(e.pointerId); goal = null; setPressed('view', null);
+  if(pointers.size===2){ const [a,b]=[...pointers.values()]; pinch0 = Math.hypot(a[0]-b[0], a[1]-b[1]); dist0 = dist; } });
+stage.addEventListener('pointermove', e=>{
+  if(!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if(pointers.size===1){ az -= (e.clientX-prev[0])*0.008; el = Math.min(1.53, Math.max(.12, el + (e.clientY-prev[1])*0.006)); }
+  else if(pointers.size===2){ const [a,b]=[...pointers.values()]; const d = Math.hypot(a[0]-b[0], a[1]-b[1]); if(pinch0) dist = Math.min(1100, Math.max(220, dist0*pinch0/d)); }
+});
+const up = e=>{ pointers.delete(e.pointerId); if(pointers.size<2) pinch0 = 0; };
+stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+stage.addEventListener('wheel', e=>{ e.preventDefault(); dist = Math.min(1100, Math.max(220, dist*(1 + e.deltaY*0.001))); goal = null; }, { passive:false });
+
+// ---------- controls ----------
+function setPressed(id, v){ document.getElementById(id).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===v))); }
+function chips(id, key, parse, rebuild){
+  document.getElementById(id).addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    setPressed(id, b.dataset.v); state[key] = parse ? parse(b.dataset.v) : b.dataset.v;
+    if(rebuild) buildBook();
+  });
+}
+chips('bind','bind',null,true); chips('sheets','sheets',Number,true); chips('coat','coat',null,true);
+document.getElementById('view').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return; setPressed('view', b.dataset.v); goal = { ...views[b.dataset.v] };
+  goal.az += Math.round((az - goal.az)/(Math.PI*2))*Math.PI*2;
+});
+const btnCover = document.getElementById('btn-cover'), btnSheet = document.getElementById('btn-sheet');
+function syncButtons(){
+  btnCover.textContent = state.cover ? '표지 덮기' : '표지 열기'; btnCover.setAttribute('aria-pressed', String(state.cover));
+  btnSheet.textContent = state.sheet ? '속지 되돌리기' : '속지 한 장 넘기기'; btnSheet.setAttribute('aria-pressed', String(state.sheet));
+}
+btnCover.addEventListener('click', ()=>{ state.cover = !state.cover; if(!state.cover) state.sheet = false; syncButtons(); });
+btnSheet.addEventListener('click', ()=>{ state.sheet = !state.sheet; if(state.sheet) state.cover = true; syncButtons(); });
+
+function resize(){
+  const r = stage.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / r.height;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function loop(){
+  const k = reduce ? 1 : 0.08;
+  // open past 180° just enough for the free edge to rest on the desk
+  const coverOpen = Math.PI + Math.asin(Math.min(1, coverHinge.position.y / W));
+  const sheetOpen = Math.PI + Math.asin(Math.min(1, coverHinge.position.y / W)) - 0.002;
+  coverAngle += ((state.cover ? coverOpen : 0) - coverAngle) * k;
+  sheetAngle += ((state.sheet ? sheetOpen - 0.0 : 0) - sheetAngle) * k;
+  coverHinge.rotation.z = coverAngle;
+  sheetHinge.rotation.z = sheetAngle;
+  sheetHinge.position.y = baseSheetY + Math.min(1, sheetAngle/Math.PI) * 0.9;
+  // keep the open spread centred
+  const shift = state.cover ? W/2 : -20;
+  book.position.x += (shift - book.position.x) * k;
+  if(goal){ az += (goal.az-az)*k; el += (goal.el-el)*k; dist += (goal.dist-dist)*k; }
+  placeCamera();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+buildBook(); resize(); syncButtons(); requestAnimationFrame(loop);
+</script>

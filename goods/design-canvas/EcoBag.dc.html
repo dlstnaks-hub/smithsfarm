@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>에코백</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Nanum+Myeongjo:wght@800&amp;family=IBM+Plex+Sans+KR:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 720px; height: 900px; box-sizing: border-box; padding: 48px; background: #e7e2d6; font-family: 'IBM Plex Sans KR', sans-serif; color: #1f2a1f; display: flex; flex-direction: column; align-items: center; gap: 28px">
+<div style="display: flex; gap: 96px; height: 150px; align-items: flex-end">
+<div style="width: 120px; height: 150px; box-sizing: border-box; border: 18px solid {{bagInk}}; border-bottom: none; border-radius: 60px 60px 0 0; opacity: 0.9"></div>
+<div style="width: 120px; height: 150px; box-sizing: border-box; border: 18px solid {{bagInk}}; border-bottom: none; border-radius: 60px 60px 0 0; opacity: 0.9"></div>
+</div>
+<div style="margin-top: -28px; width: 520px; height: 560px; box-sizing: border-box; background: {{bagColor}}; border-radius: 6px; box-shadow: 0 24px 48px rgba(31,42,31,0.18); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; color: {{bagInk}}">
+<svg width="200" height="200" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+<ellipse cx="60" cy="48" rx="34" ry="32" fill="currentColor"></ellipse>
+<path d="M34 70 C28 92 18 98 12 92 M48 76 C46 98 38 110 30 106 M72 76 C74 98 82 110 90 106 M86 70 C92 92 102 98 108 92" stroke="currentColor" stroke-width="10" stroke-linecap="round"></path>
+<circle cx="48" cy="48" r="6" fill="{{bagColor}}"></circle>
+<circle cx="72" cy="48" r="6" fill="{{bagColor}}"></circle>
+<path d="M52 62 Q60 68 68 62" stroke="{{bagColor}}" stroke-width="4" stroke-linecap="round"></path>
+</svg>
+<div style="font-family: 'DM Serif Display', serif; font-size: 72px; line-height: 1">Smith's Farm</div>
+<div style="font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 26px">스미스씨네 농장</div>
+<div style="width: 280px; height: 2px; background: {{bagInk}}"></div>
+<div style="font-size: 15px; letter-spacing: 0.24em; font-weight: 600">GNOCCHI · OCTOPUS · PIZZA</div>
+<div style="font-size: 13px; letter-spacing: 0.2em">HAEUNDAE, BUSAN</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 14px; color: #4a554a">
+<div><b style="color: #1f2a1f">캔버스 에코백</b> · 1도 실크 인쇄 · 380 × 410mm</div>
+<div>판매가 [가격] · 관광객 기념품 / 포장 주문 가방 겸용</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"bagColor":{"editor":"color","default":"#f3eee2","options":["#f3eee2","#2f6b3a","#1f2a1f","#e9a93b"]},"bagInk":{"editor":"color","default":"#2f6b3a","options":["#2f6b3a","#c4532d","#f6f3ec","#1f2a1f"]},"$preview":{"width":720,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return { bagColor: this.props.bagColor ?? '#f3eee2', bagInk: this.props.bagInk ?? '#2f6b3a' };
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>팬트리 소스 라벨</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Nanum+Myeongjo:wght@800&amp;family=IBM+Plex+Sans+KR:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1040px; height: 900px; box-sizing: border-box; padding: 56px; background: #f6f3ec; font-family: 'IBM Plex Sans KR', sans-serif; color: #1f2a1f; display: flex; flex-direction: column; gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #2f6b3a">SMITH'S FARM PANTRY</div>
+<div style="font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 40px">매장 소스를 집으로</div>
+<div style="font-size: 16px; color: #4a554a">팬트리 선반에 진열해 판매하는 병 소스 3종 라벨</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; align-items: end">
+<sc-for list="{{jars}}" as="jar" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div style="width: 150px; height: 44px; border-radius: 10px 10px 4px 4px; background: #2f6b3a"></div>
+<div style="width: 260px; height: 400px; margin-top: -12px; border-radius: 28px 28px 40px 40px; background: {{jar.fill}}; box-shadow: inset 0 0 0 4px rgba(255,255,255,0.35), 0 16px 32px rgba(31,42,31,0.16); display: flex; align-items: center; justify-content: center">
+<div style="width: 220px; height: 250px; box-sizing: border-box; background: #fbf9f4; border: 2px solid #2f6b3a; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center">
+<div style="font-family: 'DM Serif Display', serif; font-size: 22px; color: #2f6b3a">Smith's Farm</div>
+<div style="width: 100%; height: 1px; background: #2f6b3a"></div>
+<div style="font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1.05; color: {{jar.ink}}">{{jar.en}}</div>
+<div style="font-family: 'Nanum Myeongjo', serif; font-weight: 800; font-size: 22px">{{jar.ko}}</div>
+<div style="font-size: 12px; color: #4a554a">{{jar.use}}</div>
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.1em">[용량] · [가격]</div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 14px; color: #4a554a">라벨 90 × 100mm · 크라프트지 또는 미색 모조지 · 유통기한·원재료 표기 영역은 식품표시 기준에 맞춰 뒷면 라벨로 분리</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1040,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+jars: [
+{ en: 'Pumpkin Cream', ko: '단호박 크림소스', use: '단호박 고구마 뇨끼의 그 소스', fill: '#e9a93b', ink: '#b5761a' },
+{ en: 'Bolognese', ko: '볼로네제 소스', use: '파스타 · 라자냐 · 빵에 곁들여', fill: '#a8402a', ink: '#a8402a' },
+{ en: 'Basil Pesto', ko: '바질 페스토', use: '바질 크림 파스타의 베이스', fill: '#4f7d3a', ink: '#2f6b3a' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

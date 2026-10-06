@@ -1,0 +1,293 @@
+<title>당근 아크릴 키링</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+/* Layout: one product viewer on a cutting-mat stage, options in chip rows beneath, spec sheet last */
+:root{
+  --bg:#f3f1ea; --surface:#ffffff; --fg:#1f2a1f; --muted:#5a655a; --line:#d9d4c6;
+  --accent:#2f6b3a; --accent-fg:#ffffff; --stage:#e9e5da;
+  --display:'DM Serif Display', Georgia, serif;
+  --body:'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141a15; --surface:#1d251e; --fg:#ecefe8; --muted:#a3ada0; --line:#334033;
+  --accent:#8cc79a; --accent-fg:#102014; --stage:#1a221b; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141a15; --surface:#1d251e; --fg:#ecefe8; --muted:#a3ada0; --line:#334033;
+  --accent:#8cc79a; --accent-fg:#102014; --stage:#1a221b; color-scheme:dark }
+body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:15px; line-height:1.55}
+.wrap{max-width:960px; margin:0 auto; padding-inline:16px; padding-block:24px 48px; display:grid; gap:20px}
+header{display:grid; gap:4px}
+.eyebrow{font-size:12px; letter-spacing:.14em; font-weight:600; color:var(--accent)}
+h1{font-family:var(--body); font-weight:600; font-size:clamp(30px,6vw,44px); line-height:1.05; margin:0; text-wrap:balance}
+header p{margin:0; color:var(--muted); max-width:62ch}
+.main{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:20px; align-items:start}
+@media (max-width:760px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative; aspect-ratio:4/5; max-width:100%; border-radius:18px; overflow:hidden; background:var(--stage); border:1px solid var(--line); touch-action:none; cursor:grab}
+.stage:active{cursor:grabbing}
+.stage canvas{display:block; width:100%; height:100%}
+.hint{position:absolute; left:12px; bottom:12px; font-size:12px; color:#fff; background:rgba(20,30,20,.55); padding:4px 10px; border-radius:99px; pointer-events:none}
+.dims{position:absolute; right:12px; top:12px; font-size:12px; font-variant-numeric:tabular-nums; color:#fff; background:rgba(20,30,20,.55); padding:4px 10px; border-radius:99px}
+.err{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; text-align:center; color:var(--muted)}
+.panel{display:grid; gap:16px; min-width:0}
+fieldset{border:0; margin:0; padding:0; display:grid; gap:8px}
+legend{font-size:12px; letter-spacing:.1em; font-weight:600; color:var(--muted); padding:0; margin-bottom:8px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chips button, .upload{font:inherit; font-size:14px; min-height:44px; padding:0 14px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--fg); cursor:pointer; display:inline-flex; align-items:center}
+.chips button[aria-pressed="true"]{background:var(--accent); color:var(--accent-fg); border-color:var(--accent)}
+.chips button:focus-visible, .upload:focus-within{outline:2px solid var(--accent); outline-offset:2px}
+.upload input{position:absolute; opacity:0; width:1px; height:1px}
+.views{display:flex; gap:8px; flex-wrap:wrap}
+.spec{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; display:grid; gap:10px}
+.spec h2{font-size:15px; margin:0}
+.spec dl{display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 16px; margin:0; font-size:14px}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0; font-variant-numeric:tabular-nums}
+.note{font-size:13px; color:var(--muted); margin:0}
+@media (prefers-reduced-motion: reduce){.stage{cursor:default}}
+</style>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SMITH'S FARM GOODS · 키링 실물 미리보기</div>
+    <h1>당근 아크릴 키링</h1>
+    <p>보내 주신 오프린트미 파일(ohprint_keyring_03_carrot.pdf)의 칼선, 인쇄, 화이트 레이어를 그대로 읽어서 3D로 만들었어요. 드래그해서 돌려 보고 소재와 두께를 바꿔 보세요.</p>
+  </header>
+
+  <div class="main">
+    <div class="stage" id="stage" aria-label="당근 키링 3D 미리보기. 드래그해서 돌릴 수 있어요">
+      <div class="dims" id="dims">30 × 56 mm</div>
+      <div class="hint">드래그해서 돌려 보기</div>
+    </div>
+
+    <div class="panel">
+      <fieldset>
+        <legend>소재</legend>
+        <div class="chips" id="mat">
+          <button type="button" data-v="clear" aria-pressed="true">투명 아크릴</button>
+          <button type="button" data-v="frost" aria-pressed="false">무광 아크릴</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>두께</legend>
+        <div class="chips" id="thick">
+          <button type="button" data-v="3" aria-pressed="true">3mm</button>
+          <button type="button" data-v="5" aria-pressed="false">5mm</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>고리</legend>
+        <div class="chips" id="metal">
+          <button type="button" data-v="silver" aria-pressed="true">은색</button>
+          <button type="button" data-v="gold" aria-pressed="false">금색</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>보는 방향</legend>
+        <div class="chips" id="view">
+          <button type="button" data-v="0" aria-pressed="false">앞면</button>
+          <button type="button" data-v="1.35" aria-pressed="false">옆면</button>
+          <button type="button" data-v="3.14159" aria-pressed="false">뒷면</button>
+          <button type="button" data-v="swing" aria-pressed="true">흔들기</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>같이 보기</legend>
+        <div class="chips" id="pair">
+          <button type="button" data-v="off" aria-pressed="true">당근만</button>
+          <button type="button" data-v="on" aria-pressed="false">손가락 크기 비교</button>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <section class="spec" aria-labelledby="spec-h">
+    <h2 id="spec-h">파일에서 읽은 제작 사양</h2>
+    <dl>
+      <dt>크기</dt><dd>30 × 56 mm (아트보드 30 × 56mm, 고리 제외)</dd>
+      <dt>칼선</dt><dd>당근 외곽선 그대로, 잎 가운데 고리 구멍 지름 3.4mm</dd>
+      <dt>인쇄</dt><dd>주황 몸통 + 초록 잎 + 얼굴, 칼선 끝까지 꽉 찬 인쇄</dd>
+      <dt>화이트</dt><dd>칼선보다 1% 작게 깔린 화이트 → 가장자리에 아주 얇은 투명 테두리</dd>
+      <dt>소재</dt><dd id="spec-mat">투명 아크릴 3mm, 뒷면 인쇄</dd>
+      <dt>부자재</dt><dd id="spec-metal">은색 O링 + 지름 25mm 키링</dd>
+    </dl>
+    <p class="note">레이어 이름은 파일 그대로예요: 화이트(ocW), 인쇄(ocP), 칼선(ocC, 마젠타 0.05mm). 고리 구멍이 지름 3.4mm로 작은 편이라, 업체 기본 O링이 들어가는지 주문 전에 확인하세요.</p>
+  </section>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const stage = document.getElementById('stage');
+const state = { mat:'clear', thick:3, metal:'silver', view:'swing', pair:'off' };
+
+// ---------- the carrot, exactly as drawn in the PDF (mm, y up) ----------
+const OUTLINE = [
+  ['M',2,38],['C',0,44,1,50,5,52],['C',7,53,9,51,10,48],['L',10,52],['C',10,54.5,12,56,15,56],['C',18,56,20,54.5,20,52],
+  ['L',20,48],['C',21,51,23,53,25,52],['C',29,50,30,44,28,38],['C',25,26,19,10,16,2],['C',15.6,0.6,14.4,0.6,14,2],['C',11,10,5,26,2,38]
+];
+const LEAVES = [
+  ['M',2,39],['C',0,44,1,50,5,52],['C',7,53,9,51,10,48],['L',10,52],['C',10,54.5,12,56,15,56],['C',18,56,20,54.5,20,52],
+  ['L',20,48],['C',21,51,23,53,25,52],['C',29,50,30,44,28,39]
+];
+const HOLE = [15, 50, 1.7];
+const ART_W = 30, ART_H = 56;
+
+function tracePath(ctx, cmds){
+  ctx.beginPath();
+  for(const [k,...a] of cmds){
+    if(k==='M') ctx.moveTo(a[0],a[1]); else if(k==='L') ctx.lineTo(a[0],a[1]); else ctx.bezierCurveTo(...a);
+  }
+  ctx.closePath();
+}
+function holePath(ctx){ ctx.moveTo(HOLE[0]+HOLE[2], HOLE[1]); ctx.arc(HOLE[0], HOLE[1], HOLE[2], 0, Math.PI*2); }
+
+// print layer (ocP) and white layer (ocW) drawn to canvases in PDF coordinates
+const PX = 40; // pixels per mm
+function layerCanvas(draw){
+  const c = document.createElement('canvas'); c.width = ART_W*PX; c.height = ART_H*PX;
+  const g = c.getContext('2d'); g.setTransform(PX,0,0,-PX,0,ART_H*PX); draw(g); return c;
+}
+const printCanvas = layerCanvas(g=>{
+  g.fillStyle = 'rgb(245,130,31)'; tracePath(g, OUTLINE); holePath(g); g.fill('evenodd');
+  g.fillStyle = 'rgb(47,107,58)'; tracePath(g, LEAVES); holePath(g); g.fill('evenodd');
+  g.strokeStyle = 'rgb(206,95,16)'; g.lineWidth = .6; g.lineCap = 'round';
+  [[5,33,9,32.2],[21,33,25,32.2],[8,14,12,13.2],[18,17,22,16.2]].forEach(([a,b,c,d])=>{ g.beginPath(); g.moveTo(a,b); g.lineTo(c,d); g.stroke(); });
+  g.fillStyle = 'rgb(42,35,24)'; [[11.3,28],[18.7,28]].forEach(([x,y])=>{ g.beginPath(); g.arc(x,y,1.9,0,Math.PI*2); g.fill(); });
+  g.fillStyle = '#fff'; [[11.9,28.7],[19.3,28.7]].forEach(([x,y])=>{ g.beginPath(); g.arc(x,y,.6,0,Math.PI*2); g.fill(); });
+  g.fillStyle = 'rgb(255,199,153)'; [[7.2,24.5],[22.8,24.5]].forEach(([x,y])=>{ g.beginPath(); g.ellipse(x,y,1.8,1.2,0,0,Math.PI*2); g.fill(); });
+  g.strokeStyle = 'rgb(42,35,24)'; g.lineWidth = .8; g.beginPath(); g.moveTo(13,24.6); g.bezierCurveTo(14.2,23.2,15.8,23.2,17,24.6); g.stroke();
+});
+const whiteCanvas = layerCanvas(g=>{
+  g.transform(.99,0,0,.99,.15,.28);
+  g.fillStyle = '#fff'; tracePath(g, OUTLINE); holePath(g); g.fill('evenodd');
+});
+
+// ---------- scene ----------
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias:true }); }
+catch(e){ stage.insertAdjacentHTML('beforeend','<div class="err">이 기기에서는 3D 미리보기를 열 수 없어요. 다른 브라우저나 컴퓨터에서 열어 주세요.</div>'); throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+stage.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(60,120,140); scene.add(key);
+const rim = new THREE.DirectionalLight(0xfff1dd, 0.8); rim.position.set(-120,40,-60); scene.add(rim);
+const camera = new THREE.PerspectiveCamera(28, 4/5, 1, 2000);
+camera.position.set(0, 0, 205);
+
+function matTexture(){
+  const c=document.createElement('canvas'); c.width=c.height=1500; const g=c.getContext('2d');
+  g.fillStyle='#2a5a3a'; g.fillRect(0,0,1500,1500);
+  for(let i=0;i<=300;i+=5){ const p=i*5; g.strokeStyle = i%10===0 ? 'rgba(255,255,255,.2)' : 'rgba(255,255,255,.07)'; g.lineWidth = i%50===0?3:1.5;
+    g.beginPath(); g.moveTo(p,0); g.lineTo(p,1500); g.stroke(); g.beginPath(); g.moveTo(0,p); g.lineTo(1500,p); g.stroke(); }
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; return t;
+}
+const mat = new THREE.Mesh(new THREE.PlaneGeometry(300,300), new THREE.MeshStandardMaterial({ map:matTexture(), roughness:.9 }));
+mat.position.set(0,0,-38); scene.add(mat);
+scene.background = new THREE.Color('#2a5a3a');
+
+// finger for scale (about 16mm wide), standing beside the keyring
+const finger = new THREE.Group();
+{
+  const skin = new THREE.MeshStandardMaterial({ color:'#e3b796', roughness:.6 });
+  finger.add(new THREE.Mesh(new THREE.CapsuleGeometry(8, 70, 8, 24), skin));
+  const nail = new THREE.Mesh(new THREE.SphereGeometry(6, 24, 16), new THREE.MeshStandardMaterial({ color:'#f2d3c4', roughness:.3 }));
+  nail.scale.set(.85, 1.15, .3); nail.position.set(0, 33, 6.4); finger.add(nail);
+  finger.rotation.z = 0.12; finger.position.set(38, -38, -6); finger.visible = false; scene.add(finger);
+}
+
+const hang = new THREE.Group(); scene.add(hang);
+const body = new THREE.Group(); hang.add(body);
+
+function toShape(cmds){
+  const s = new THREE.Shape();
+  for(const [k,...a] of cmds){ if(k==='M') s.moveTo(a[0],a[1]); else if(k==='L') s.lineTo(a[0],a[1]); else s.bezierCurveTo(...a); }
+  return s;
+}
+const printTex = new THREE.CanvasTexture(printCanvas); printTex.colorSpace = THREE.SRGBColorSpace; printTex.anisotropy = 8;
+const whiteTex = new THREE.CanvasTexture(whiteCanvas); whiteTex.colorSpace = THREE.SRGBColorSpace;
+
+function build(){
+  body.clear();
+  const shape = toShape(OUTLINE);
+  shape.holes.push(new THREE.Path().absarc(HOLE[0], HOLE[1], HOLE[2], 0, Math.PI*2, true));
+  const T = state.thick, bev = .3;
+  const geo = new THREE.ExtrudeGeometry(shape, { depth:T-2*bev, bevelEnabled:true, bevelThickness:bev, bevelSize:bev, bevelSegments:3, curveSegments:24 });
+  geo.translate(0,0,-(T-2*bev)/2);
+  const acrylic = new THREE.MeshPhysicalMaterial({ color:0xffffff, roughness: state.mat==='frost' ? .38 : .03, transmission:1, thickness:T, ior:1.49,
+    clearcoat:1, clearcoatRoughness: state.mat==='frost' ? .5 : .03, attenuationColor:new THREE.Color('#d6efe6'), attenuationDistance:40 });
+  body.add(new THREE.Mesh(geo, acrylic));
+  const pg = new THREE.PlaneGeometry(ART_W, ART_H);
+  const white = new THREE.Mesh(pg, new THREE.MeshStandardMaterial({ map:whiteTex, alphaTest:.5, roughness:.6, side:THREE.DoubleSide }));
+  white.position.set(ART_W/2, ART_H/2, -T/2 + .05);
+  const color = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({ map:printTex, alphaTest:.5 }));
+  color.position.set(ART_W/2, ART_H/2, -T/2 + .1);
+  body.add(white, color);
+  const metal = new THREE.MeshStandardMaterial({ color: state.metal==='gold' ? '#d8b25a' : '#d7dbe0', metalness:1, roughness:.2 });
+  const jr = 3.4, jt = .5;
+  const jump = new THREE.Mesh(new THREE.TorusGeometry(jr, jt, 16, 48), metal);
+  jump.rotation.y = Math.PI/2; jump.position.set(HOLE[0], HOLE[1] + jr - .1, 0);
+  const topY = HOLE[1] + 2*jr - .1, kr = 12.5, kt = .75;
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(kr, kt, 16, 96), metal); ringA.position.set(HOLE[0], topY + kr - kt, .8);
+  const ringB = ringA.clone(); ringB.position.z = -.8;
+  body.add(jump, ringA, ringB);
+  const pivotY = topY + 2*kr;
+  body.position.set(-HOLE[0], -pivotY, 0);
+  hang.position.set(0, (pivotY + ART_H/2)/2 - ART_H/4 + 6, 0);
+  document.getElementById('spec-mat').textContent = `${state.mat==='frost'?'무광':'투명'} 아크릴 ${T}mm, 뒷면 인쇄`;
+  document.getElementById('spec-metal').textContent = `${state.metal==='gold'?'금색':'은색'} O링 + 지름 25mm 키링`;
+}
+
+// ---------- interaction ----------
+let rotY = 0, rotX = 0, targetY = 0, dragging = false, lx = 0, ly = 0, t0 = performance.now();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+stage.addEventListener('pointerdown', e=>{ dragging=true; lx=e.clientX; ly=e.clientY; stage.setPointerCapture(e.pointerId); setView(null); });
+stage.addEventListener('pointermove', e=>{ if(!dragging) return; targetY += (e.clientX-lx)*0.012; rotX = Math.max(-.6, Math.min(.6, rotX + (e.clientY-ly)*0.006)); lx=e.clientX; ly=e.clientY; });
+stage.addEventListener('pointerup', ()=>{ dragging=false; });
+stage.addEventListener('pointercancel', ()=>{ dragging=false; });
+
+function group(id, keyName, parse, after){
+  const el = document.getElementById(id);
+  el.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    state[keyName] = parse ? parse(b.dataset.v) : b.dataset.v; (after || build)();
+  });
+}
+group('mat','mat'); group('thick','thick',Number); group('metal','metal');
+group('pair','pair',null,()=>{ finger.visible = state.pair==='on'; });
+const viewEl = document.getElementById('view');
+function setView(v){
+  state.view = v;
+  viewEl.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(v!==null && x.dataset.v===v)));
+  if(v && v!=='swing'){ const r=parseFloat(v); targetY = r + Math.round((rotY - r)/(Math.PI*2))*Math.PI*2; rotX = 0; }
+  if(v==='swing') t0 = performance.now();
+}
+viewEl.addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) setView(b.dataset.v); });
+
+function resize(){
+  const r = stage.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+
+function loop(now){
+  if(state.view==='swing' && !dragging && !reduce){
+    const t = (now - t0)/1000; targetY = Math.sin(t*0.9)*0.55; hang.rotation.z = Math.sin(t*1.3)*0.035;
+  } else { hang.rotation.z *= 0.9; }
+  rotY += (targetY - rotY)*0.12;
+  hang.rotation.y = rotY; hang.rotation.x = rotX;
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+build(); resize(); requestAnimationFrame(loop);
+</script>

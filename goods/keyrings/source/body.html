@@ -1,0 +1,361 @@
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SMITH'S FARM GOODS · 키링 3종 실물 미리보기</div>
+    <h1>스씨네 농장 아크릴 키링</h1>
+    <p>당근, 문어 “씨!”, 허수아비 세 가지를 실제 제작 파일의 칼선과 인쇄 그대로 3D로 만들었어요. 드래그해서 돌려 보고, 에코백이나 책가방에 걸었을 때 느낌도 확인해 보세요.</p>
+  </header>
+
+  <div class="main">
+    <div class="stage" id="stage" aria-label="키링 3D 미리보기. 드래그해서 돌릴 수 있어요">
+      <div class="dims" id="dims"></div>
+      <div class="hint">드래그해서 돌려 보기</div>
+    </div>
+
+    <div class="panel">
+      <fieldset>
+        <legend>키링</legend>
+        <div class="chips" id="pick">
+          <button type="button" data-v="all" aria-pressed="true">3종 함께</button>
+          <button type="button" data-v="carrot" aria-pressed="false">당근</button>
+          <button type="button" data-v="octopus" aria-pressed="false">문어</button>
+          <button type="button" data-v="scarecrow" aria-pressed="false">허수아비</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>걸어 보기</legend>
+        <div class="chips" id="scene">
+          <button type="button" data-v="bag" aria-pressed="true">에코백에 걸기</button>
+          <button type="button" data-v="pack" aria-pressed="false">책가방에 걸기</button>
+          <button type="button" data-v="mat" aria-pressed="false">커팅매트 위</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>가방 색</legend>
+        <div class="chips" id="bagc"></div>
+      </fieldset>
+      <fieldset>
+        <legend>소재</legend>
+        <div class="chips" id="mat">
+          <button type="button" data-v="clear" aria-pressed="true">투명 아크릴</button>
+          <button type="button" data-v="frost" aria-pressed="false">무광 아크릴</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>두께</legend>
+        <div class="chips" id="thick">
+          <button type="button" data-v="3" aria-pressed="true">3mm</button>
+          <button type="button" data-v="5" aria-pressed="false">5mm</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>고리</legend>
+        <div class="chips" id="metal">
+          <button type="button" data-v="silver" aria-pressed="true">은색</button>
+          <button type="button" data-v="gold" aria-pressed="false">금색</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>보는 방향</legend>
+        <div class="chips" id="view">
+          <button type="button" data-v="0" aria-pressed="false">앞면</button>
+          <button type="button" data-v="1.35" aria-pressed="false">옆면</button>
+          <button type="button" data-v="3.14159" aria-pressed="false">뒷면</button>
+          <button type="button" data-v="swing" aria-pressed="true">흔들기</button>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <section class="spec" aria-labelledby="spec-h">
+    <h2 id="spec-h">제작 사양</h2>
+    <dl>
+      <dt>당근</dt><dd>30 × 56mm · 보내 주신 파일 그대로, 칼선 끝까지 꽉 찬 인쇄</dd>
+      <dt>문어 “씨!”</dt><dd>48 × 50mm · 그림 바깥 1.2mm 크림색 테두리, 머리 위 고리 탭</dd>
+      <dt>허수아비</dt><dd>48 × 58mm · 그림 바깥 1.2mm 크림색 테두리, 밀짚모자 꼭대기에 고리 구멍</dd>
+      <dt>공통</dt><dd id="spec-common">투명 아크릴 3mm, 뒷면 인쇄 + 화이트, 고리 구멍 지름 3.4mm, 은색 O링 + 지름 25mm 키링</dd>
+    </dl>
+    <p class="note">문어와 허수아비도 당근 파일과 같은 오프린트미 형식(화이트 · 인쇄 · 칼선 레이어)으로 만들었어요. 크기는 업체 규격에 맞춰 조정할 수 있어요.</p>
+  </section>
+</div>
+
+<script>/*DATA*/</script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const stage = document.getElementById('stage');
+const state = { pick:'all', mat:'clear', thick:3, metal:'silver', view:'swing', scene:'bag', bagc:'cream' };
+const NAMES = { carrot:'당근', octopus:'문어', scarecrow:'허수아비' };
+const ORDER = ['carrot', 'octopus', 'scarecrow'];
+
+// carrot outline from the ohprint file (mm, y up)
+const CARROT = [['M',2,38],['C',0,44,1,50,5,52],['C',7,53,9,51,10,48],['L',10,52],['C',10,54.5,12,56,15,56],['C',18,56,20,54.5,20,52],
+  ['L',20,48],['C',21,51,23,53,25,52],['C',29,50,30,44,28,38],['C',25,26,19,10,16,2],['C',15.6,0.6,14.4,0.6,14,2],['C',11,10,5,26,2,38]];
+
+const PX = 40;
+function outlineOnCanvas(g, k){
+  if(k.poly){ g.beginPath(); k.poly.forEach(([x,y],i)=> i ? g.lineTo(x,y) : g.moveTo(x,y)); g.closePath(); }
+  else { g.save(); g.translate(0, k.h); g.scale(1,-1); g.beginPath();
+    for(const [c,...a] of CARROT){ if(c==='M') g.moveTo(a[0],a[1]); else if(c==='L') g.lineTo(a[0],a[1]); else g.bezierCurveTo(...a); }
+    g.closePath(); g.restore(); }
+}
+function loadArt(k){
+  return new Promise((res, rej)=>{
+    const svg = k.svg.replace(/width="[\d.]+mm" height="[\d.]+mm"/, `width="${k.w*PX}" height="${k.h*PX}"`);
+    const img = new Image();
+    img.onload = ()=>{
+      const c = document.createElement('canvas'); c.width = k.w*PX; c.height = k.h*PX;
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      const wc = document.createElement('canvas'); wc.width = c.width; wc.height = c.height;
+      const g = wc.getContext('2d'); g.setTransform(PX*.99,0,0,PX*.99, c.width*.005, c.height*.005);
+      g.fillStyle = '#fff'; outlineOnCanvas(g, k); g.fill();
+      res({ print:c, white:wc });
+    };
+    img.onerror = rej;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+function shapeOf(k){
+  let s;
+  if(k.poly){ s = new THREE.Shape(k.poly.map(([x,y])=> new THREE.Vector2(x, k.h - y))); }
+  else { s = new THREE.Shape(); for(const [c,...a] of CARROT){ if(c==='M') s.moveTo(a[0],a[1]); else if(c==='L') s.lineTo(a[0],a[1]); else s.bezierCurveTo(...a); } }
+  const [hx,hy,hr] = k.hole;
+  s.holes.push(new THREE.Path().absarc(hx, k.h - hy, hr, 0, Math.PI*2, true));
+  return s;
+}
+
+// ---------- scene ----------
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias:true }); }
+catch(e){ stage.insertAdjacentHTML('beforeend','<div class="err">이 기기에서는 3D 미리보기를 열 수 없어요. 다른 브라우저나 컴퓨터에서 열어 주세요.</div>'); throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(60,120,140); scene.add(key);
+key.castShadow = true; key.shadow.mapSize.set(2048,2048); key.shadow.radius = 5; key.shadow.bias = -0.0005;
+Object.assign(key.shadow.camera, { left:-160, right:160, top:160, bottom:-160, near:20, far:600 });
+const rim = new THREE.DirectionalLight(0xfff1dd, 0.8); rim.position.set(-120,40,-60); scene.add(rim);
+const camera = new THREE.PerspectiveCamera(28, 4/5, 1, 3000);
+function matTexture(){
+  const c=document.createElement('canvas'); c.width=c.height=1500; const g=c.getContext('2d');
+  g.fillStyle='#2a5a3a'; g.fillRect(0,0,1500,1500);
+  for(let i=0;i<=300;i+=5){ const p=i*5; g.strokeStyle = i%10===0 ? 'rgba(255,255,255,.2)' : 'rgba(255,255,255,.07)'; g.lineWidth = i%50===0?3:1.5;
+    g.beginPath(); g.moveTo(p,0); g.lineTo(p,1500); g.stroke(); g.beginPath(); g.moveTo(0,p); g.lineTo(1500,p); g.stroke(); }
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; return t;
+}
+const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(600,600), new THREE.MeshStandardMaterial({ map:matTexture(), roughness:.9 }));
+backdrop.position.set(0,0,-40); scene.add(backdrop);
+scene.background = new THREE.Color('#2a5a3a');
+
+// ---------- canvas tote bag: woven cotton, stitched top hem, sewn-on fabric loops ----------
+const BAG = { cream:['#e9e1cf','#d8ceb6','#2f6b3a'], green:['#2f5f3c','#284f33','#f3eee2'], black:['#2b2b29','#222220','#e9e1cf'] };
+function bagTexture(col){
+  const [base, hem, ink] = BAG[col];
+  const c = document.createElement('canvas'); c.width = 1300; c.height = 1500; const g = c.getContext('2d'); // 5 px per mm, 260 x 300 mm
+  g.fillStyle = base; g.fillRect(0,0,c.width,c.height);
+  for(let y=0;y<c.height;y+=2){ g.fillStyle = `rgba(0,0,0,${0.03+Math.random()*0.04})`; g.fillRect(0,y,c.width,1); }
+  for(let x=0;x<c.width;x+=2){ g.fillStyle = `rgba(255,255,255,${0.02+Math.random()*0.04})`; g.fillRect(x,0,1,c.height); }
+  for(let i=0;i<900;i++){ g.fillStyle = `rgba(0,0,0,${Math.random()*0.06})`; g.fillRect(Math.random()*c.width, Math.random()*c.height, 2+Math.random()*6, 1); }
+  g.fillStyle = hem; g.globalAlpha = .55; g.fillRect(0,0,c.width,150); g.globalAlpha = 1;
+  g.strokeStyle = 'rgba(0,0,0,.28)'; g.setLineDash([10,7]); g.lineWidth = 2;
+  [140, 18].forEach(y=>{ g.beginPath(); g.moveTo(0,y); g.lineTo(c.width,y); g.stroke(); });
+  g.setLineDash([]);
+  g.fillStyle = ink; g.textAlign = 'center';
+  g.font = 'bold 150px Georgia, "Times New Roman", serif'; g.fillText("Smith's Farm", c.width/2, 1180);
+  g.font = '600 52px "IBM Plex Sans KR", sans-serif'; g.fillText('HAEUNDAE · BUSAN', c.width/2, 1270);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+// ---------- kids' backpack: nylon ripstop, webbing strip with bar-tacks, zipped front pocket ----------
+const PACK = { navy:['#24324f','#1b263d','#e9b949'], red:['#c4473a','#a43a2f','#fdf8ee'], yellow:['#e9b949','#cf9f33','#2f6b3a'] };
+function packTexture(col){
+  const [base, dark, accent] = PACK[col];
+  const c = document.createElement('canvas'); c.width = 1200; c.height = 1500; const g = c.getContext('2d'); // 5 px per mm, 240 x 300 mm
+  const rr = (x,y,w,h,r)=>{ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); };
+  rr(0,0,1200,1700,300); g.fillStyle = base; g.fill(); g.save(); g.clip();
+  g.strokeStyle = 'rgba(0,0,0,.10)'; g.lineWidth = 1.5;
+  for(let i=0;i<1500;i+=24){ g.beginPath(); g.moveTo(0,i); g.lineTo(1200,i); g.stroke(); g.beginPath(); g.moveTo(i,0); g.lineTo(i,1500); g.stroke(); }
+  for(let i=0;i<1400;i++){ g.fillStyle = `rgba(255,255,255,${Math.random()*0.035})`; g.fillRect(Math.random()*1200, Math.random()*1500, 3, 2); }
+  // webbing strip the keyrings hang from
+  g.fillStyle = '#2a2a28'; g.fillRect(0, 85, 1200, 70);
+  g.strokeStyle = 'rgba(255,255,255,.12)'; g.lineWidth = 2; for(let x=0;x<1200;x+=6){ g.beginPath(); g.moveTo(x,88); g.lineTo(x+3,152); g.stroke(); }
+  g.strokeStyle = 'rgba(255,255,255,.35)'; g.setLineDash([8,6]); g.beginPath(); g.moveTo(0,92); g.lineTo(1200,92); g.moveTo(0,148); g.lineTo(1200,148); g.stroke(); g.setLineDash([]);
+  // front pocket with a zip along its top
+  rr(130, 620, 940, 860, 120); g.fillStyle = dark; g.fill();
+  g.strokeStyle = 'rgba(255,255,255,.28)'; g.setLineDash([12,8]); g.lineWidth = 3; rr(150, 640, 900, 820, 104); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#1a1a1a'; g.fillRect(170, 700, 860, 22);
+  g.fillStyle = '#8a8a86'; for(let x=172;x<1028;x+=9) g.fillRect(x, 703, 5, 16);
+  g.fillStyle = '#c9ccd1'; rr(990, 690, 34, 90, 10); g.fill();
+  // little woven label on the pocket
+  rr(880, 1280, 150, 70, 8); g.fillStyle = accent; g.fill();
+  g.fillStyle = base; g.font = 'bold 30px Georgia, serif'; g.textAlign = 'center'; g.fillText('Smith\u2019s', 955, 1325);
+  g.restore();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const pack = new THREE.Group(); scene.add(pack);
+const packPanel = new THREE.Mesh(new THREE.PlaneGeometry(240,300), new THREE.MeshStandardMaterial({ roughness:.55, transparent:false, alphaTest:.5 }));
+packPanel.receiveShadow = true; pack.add(packPanel);
+const COLORS = { bag:[['cream','생지'],['green','초록'],['black','검정']], pack:[['navy','남색'],['red','빨강'],['yellow','노랑']] };
+function colorChips(){
+  const el = document.getElementById('bagc'), list = COLORS[state.scene === 'pack' ? 'pack' : 'bag'];
+  if(!list.some(([v])=>v===state.bagc)) state.bagc = list[0][0];
+  el.innerHTML = list.map(([v,l])=>`<button type="button" data-v="${v}" aria-pressed="${v===state.bagc}">${l}</button>`).join('');
+  el.closest('fieldset').hidden = state.scene === 'mat';
+}
+
+const bag = new THREE.Group(); scene.add(bag);
+const bagPanel = new THREE.Mesh(new THREE.PlaneGeometry(260,300), new THREE.MeshStandardMaterial({ roughness:.95 }));
+bagPanel.receiveShadow = true; bag.add(bagPanel);
+const strapMat = new THREE.MeshStandardMaterial({ roughness:.9 });
+[-70, 70].forEach(x=>{ const s = new THREE.Mesh(new THREE.BoxGeometry(26, 120, 2), strapMat); s.position.set(x, 210, -11.4); s.receiveShadow = true; s.userData.strap = true; bag.add(s); });
+const loopMat = new THREE.MeshStandardMaterial({ roughness:.9 });
+function setBagColor(){
+  if(state.scene === 'pack'){ packPanel.material.map = packTexture(state.bagc); packPanel.material.needsUpdate = true; loopMat.color.set('#2a2a28'); return; }
+  if(!BAG[state.bagc]) return;
+  bagPanel.material.map = bagTexture(state.bagc); bagPanel.material.needsUpdate = true;
+  strapMat.color.set(BAG[state.bagc][1]); loopMat.color.set(BAG[state.bagc][1]);
+}
+
+const arts = {};
+const world = new THREE.Group(); scene.add(world);
+let hangs = [];
+
+function buildOne(name){
+  const k = KEYRINGS[name], a = arts[name];
+  const hang = new THREE.Group(), body = new THREE.Group(); hang.add(body);
+  const T = state.thick, bev = .3;
+  const geo = new THREE.ExtrudeGeometry(shapeOf(k), { depth:T-2*bev, bevelEnabled:true, bevelThickness:bev, bevelSize:bev, bevelSegments:3, curveSegments:24 });
+  geo.translate(0,0,-(T-2*bev)/2);
+  body.add(new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({ color:0xffffff, roughness: state.mat==='frost' ? .38 : .03, transmission:1, thickness:T, ior:1.49,
+    clearcoat:1, clearcoatRoughness: state.mat==='frost' ? .5 : .03, attenuationColor:new THREE.Color('#d6efe6'), attenuationDistance:40 })));
+  const pg = new THREE.PlaneGeometry(k.w, k.h);
+  const tw = new THREE.CanvasTexture(a.white); tw.colorSpace = THREE.SRGBColorSpace;
+  const tp = new THREE.CanvasTexture(a.print); tp.colorSpace = THREE.SRGBColorSpace; tp.anisotropy = 8;
+  const white = new THREE.Mesh(pg, new THREE.MeshStandardMaterial({ map:tw, alphaTest:.5, roughness:.6, side:THREE.DoubleSide }));
+  white.position.set(k.w/2, k.h/2, -T/2 + .05);
+  const print = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({ map:tp, alphaTest:.5 }));
+  print.position.set(k.w/2, k.h/2, -T/2 + .1);
+  white.castShadow = print.castShadow = true;
+  body.add(white, print);
+  const metal = new THREE.MeshStandardMaterial({ color: state.metal==='gold' ? '#d8b25a' : '#d7dbe0', metalness:1, roughness:.2 });
+  const hx = k.hole[0], hy = k.h - k.hole[1], jr = 3.4;
+  const jump = new THREE.Mesh(new THREE.TorusGeometry(jr, .5, 16, 48), metal);
+  jump.rotation.y = Math.PI/2; jump.position.set(hx, hy + jr - .1, 0);
+  const topY = hy + 2*jr - .1, kr = 12.5, kt = .75;
+  const ringA = new THREE.Mesh(new THREE.TorusGeometry(kr, kt, 16, 96), metal); ringA.position.set(hx, topY + kr - kt, .8);
+  const ringB = ringA.clone(); ringB.position.z = -.8;
+  [jump, ringA, ringB].forEach(m=> m.castShadow = true);
+  body.add(jump, ringA, ringB);
+  const pivotY = topY + 2*kr;
+  body.position.set(-hx, -pivotY, 0);
+  hang.userData.span = pivotY;
+  return hang;
+}
+function build(){
+  world.clear(); hangs = [];
+  const list = state.pick === 'all' ? ORDER : [state.pick];
+  const gap = 58;
+  list.forEach((n, i)=>{
+    const h = buildOne(n);
+    h.position.set((i - (list.length-1)/2) * gap, 0, 0);
+    h.userData.phase = i * 1.7;
+    world.add(h); hangs.push(h);
+  });
+  const span = Math.max(...hangs.map(h=>h.userData.span));
+  hangs.forEach(h=> h.position.y = span/2);
+  const onBag = state.scene === 'bag', onPack = state.scene === 'pack';
+  backdrop.visible = state.scene === 'mat'; bag.visible = onBag || onPack; pack.visible = onPack;
+  bagPanel.visible = onBag; bag.children.filter(o=>o.userData.strap).forEach(o=> o.visible = onBag);
+  scene.background = new THREE.Color(onPack ? '#cfd8dc' : onBag ? '#d9d3c4' : '#2a5a3a');
+  if(onPack) packPanel.position.set(0, span/2 - 0.75 + 24 - 150, -12.6);
+  setBagColor();
+  if(onBag || onPack){
+    // bag surface sits behind the keyrings; the hem's top edge just above the loops
+    const wireY = span/2 - 0.75;
+    bagPanel.position.set(0, wireY + 28 - 150, -12.6);
+    bag.children.filter(o=>o.userData.strap).forEach(o=> o.position.y = wireY + 28 + 60);
+    bag.children.filter(o=>o.userData.loop).forEach(o=>bag.remove(o));
+    hangs.forEach(h=>{
+      // a flat cotton-tape loop sewn to the hem, threaded through the split ring
+      const loop = new THREE.Mesh(new THREE.TorusGeometry(7, 1.3, 12, 40), loopMat);
+      loop.scale.set(1, 1, 3.6); loop.rotation.y = Math.PI/2;
+      loop.position.set(h.position.x, wireY, -5.6); loop.castShadow = true; loop.receiveShadow = true;
+      loop.userData.loop = true; bag.add(loop);
+    });
+  }
+  fit();
+  const dims = list.map(n=> `${NAMES[n]} ${KEYRINGS[n].w}×${KEYRINGS[n].h}mm`).join(' · ');
+  document.getElementById('dims').textContent = dims;
+  document.getElementById('spec-common').textContent =
+    `${state.mat==='frost'?'무광':'투명'} 아크릴 ${state.thick}mm, 뒷면 인쇄 + 화이트, 고리 구멍 지름 3.4mm, ${state.metal==='gold'?'금색':'은색'} O링 + 지름 25mm 키링`;
+}
+
+// ---------- interaction ----------
+let rotY = 0, rotX = 0, targetY = 0, dragging = false, lx = 0, ly = 0, t0 = performance.now();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+stage.addEventListener('pointerdown', e=>{ dragging=true; lx=e.clientX; ly=e.clientY; stage.setPointerCapture(e.pointerId); setView(null); });
+stage.addEventListener('pointermove', e=>{ if(!dragging) return; targetY += (e.clientX-lx)*0.012; rotX = Math.max(-.6, Math.min(.6, rotX + (e.clientY-ly)*0.006)); lx=e.clientX; ly=e.clientY; });
+stage.addEventListener('pointerup', ()=>{ dragging=false; });
+stage.addEventListener('pointercancel', ()=>{ dragging=false; });
+function group(id, keyName, parse){
+  const el = document.getElementById(id);
+  el.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+    state[keyName] = parse ? parse(b.dataset.v) : b.dataset.v; build();
+  });
+}
+group('pick','pick'); group('mat','mat');
+document.getElementById('scene').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#scene button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+  state.scene = b.dataset.v; colorChips(); build();
+}); group('thick','thick',Number); group('metal','metal');
+document.getElementById('bagc').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#bagc button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
+  state.bagc = b.dataset.v; setBagColor();
+});
+const viewEl = document.getElementById('view');
+function setView(v){
+  state.view = v;
+  viewEl.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', String(v!==null && x.dataset.v===v)));
+  if(v && v!=='swing'){ const r=parseFloat(v); targetY = r + Math.round((rotY - r)/(Math.PI*2))*Math.PI*2; rotX = 0; }
+  if(v==='swing') t0 = performance.now();
+}
+viewEl.addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) setView(b.dataset.v); });
+function fit(){
+  // keep every keyring in frame whatever the stage shape
+  const needW = state.pick === 'all' ? 178 : 70, needH = 108, tan = Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  camera.position.set(0, 0, Math.max(needH/(2*tan), needW/(2*tan*camera.aspect)));
+}
+function resize(){
+  const r = stage.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); fit();
+}
+new ResizeObserver(resize).observe(stage);
+function loop(now){
+  const swing = state.view==='swing' && !dragging && !reduce, t = (now - t0)/1000;
+  if(swing) targetY = 0;
+  rotY += (targetY - rotY)*0.12;
+  hangs.forEach(h=>{
+    const ph = h.userData.phase;
+    const amp = state.scene === 'mat' ? 0.55 : 0.22;
+    h.rotation.y = rotY + (swing ? Math.sin(t*0.9 + ph)*amp : 0);
+    h.rotation.z = swing ? Math.sin(t*1.3 + ph)*0.035 : h.rotation.z*0.9;
+    h.rotation.x = rotX;
+  });
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+colorChips();
+Promise.all(ORDER.map(n=> loadArt(KEYRINGS[n]).then(a=> arts[n] = a))).then(()=>{ build(); resize(); requestAnimationFrame(loop); })
+  .catch(()=> stage.insertAdjacentHTML('beforeend','<div class="err">키링 그림을 불러오지 못했어요. 페이지를 새로 고쳐 주세요.</div>'));
+</script>
