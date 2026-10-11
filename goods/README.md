@@ -9,6 +9,8 @@
 | `diary/print/스씨네그림일기_A5_인쇄소용_재단여백3mm.pdf` | 그림일기 인쇄소용 (A5 148×210mm, 사방 재단 여백 3mm, 표지·속지 2쪽, 4도) |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용_A4한장.pdf` | 집 프린터 시험 출력: A4 가로 한 장에 표지·속지, 가운데를 자르면 A5 두 장 |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용_A4양면.pdf` | 집 프린터 양면 시험 출력: A4 한장 파일(왼쪽 표지 · 오른쪽 속지)을 앞뒤 똑같이 2쪽. 양면 "짧은 쪽 넘기기"로 인쇄 (`source/make_duplex.py`) |
+| `diary/print/스씨네그림일기_오늘의그림_A4한면.pdf` | 오늘의 그림 속지 한 쪽을 A4 세로 한 장 가득 (`source/make_a4full.py`) |
+| `diary/print/스씨네그림일기_A4양면_표지+오늘의그림.pdf` | A4 양면: 앞면 표지, 뒷면 오늘의 그림, 각각 A4 가득 |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용.pdf` | 집 프린터 시험 출력: 쪽마다 A4 한 장, 자를 선 바깥까지 색이 차서 흰 테두리 없음 |
 | `keyrings/print/ohprint_keyring_03_carrot_130.pdf` | 당근 키링 45.2×84.3mm (보내 주신 원본을 비율 그대로 키움) |
 | `keyrings/print/ohprint_keyring_04_scarecrow_130.pdf` | 허수아비 키링 58.9×70.8mm |
