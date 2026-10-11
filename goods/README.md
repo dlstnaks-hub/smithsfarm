@@ -43,7 +43,7 @@
 
 - `namecard/스미스씨네농장_명함_90x50.pdf` — 90×50mm 2쪽: 앞면 로고, 뒷면 매장 정보. 받은 명함 이미지(배경·캐릭터·아이콘)는 그대로 두고 글자만 바꿨어요
 - `namecard/스미스씨네농장_명함_작업94x54_재단90x50.pdf` — **인쇄소 제출용**: 작업사이즈 94×54mm(사방 2mm 여백까지 배경), 재단 90×50mm, 글자는 안전선(84×44mm) 안
-- `namecard/png/` — 제출용 PNG(앞면·뒷면, 94×54mm, 300dpi)
+- `namecard/png/` — 제출용 PNG 300dpi: 스미스씨네농장 명함(94×54mm), 박인수 대표 명함(94×54mm 재단 여백 포함 / 90×50mm 원본 크기). 박인수 명함 원본 PDF는 `source/park/`
 - `namecard/명함_가이드선_확인.png` — 인쇄소 가이드선(재단선·안전선)을 겹쳐 본 확인용 이미지
 - `namecard/명함_미리보기.png` — 앞뒤 미리보기
 - `namecard/source/` — `back_clean.png`(원본 뒷면에서 글자만 지운 이미지) 위에 `back.html`로 글자를 얹어요. 글꼴은 `npm pack @fontsource/gowun-dodum@5 @fontsource/quicksand@5` 후 `f2/` 폴더에 풀어 두고 `r.mjs`로 PDF를 뽑아요
