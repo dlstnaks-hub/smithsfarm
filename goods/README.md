@@ -38,3 +38,9 @@
   `npm pack @fontsource/gowun-batang@5 @fontsource/noto-sans-kr@5` 후 압축을 풀어 `fonts/fontsource-…-5.3.0/package/` 구조로 두면 돼요.
 - `keyrings/source/art.py` — 키링 그림 원본(당근·문어·허수아비). 크기는 `sized.py`에서 정해요. `stage1.py` → `node render.mjs png scarecrow octopus` → `stage2.py`(칼선 자동 추출) → `node render.mjs pdf scarecrow octopus carrot` → `stage3.py`(오프린트미 레이어 PDF) 순서.
 - `design-canvas/` — 굿즈 시안 캔버스(브랜드 키트, 에코백, 스티커, 소스 라벨, 키즈 매트) 원본.
+
+## 명함
+
+- `namecard/스미스씨네농장_명함_90x50.pdf` — 90×50mm 2쪽: 앞면 로고(보내 주신 파일 그대로), 뒷면 매장 정보(주소·주차·전화·인스타)
+- `namecard/명함_미리보기.png` — 앞뒤 미리보기
+- `namecard/source/back.html` — 뒷면 원본. `diary/source`와 같은 `fonts/` 폴더를 두고 Playwright로 PDF를 뽑아요(`r.mjs`)
