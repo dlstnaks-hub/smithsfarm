@@ -41,6 +41,6 @@
 
 ## 명함
 
-- `namecard/스미스씨네농장_명함_90x50.pdf` — 90×50mm 2쪽: 앞면 로고(보내 주신 파일 그대로), 뒷면 매장 정보(주소·주차·전화·인스타)
+- `namecard/스미스씨네농장_명함_90x50.pdf` — 90×50mm 2쪽: 앞면 로고, 뒷면 매장 정보. 받은 명함 이미지(배경·캐릭터·아이콘)는 그대로 두고 글자만 바꿨어요
 - `namecard/명함_미리보기.png` — 앞뒤 미리보기
-- `namecard/source/back.html` — 뒷면 원본. `diary/source`와 같은 `fonts/` 폴더를 두고 Playwright로 PDF를 뽑아요(`r.mjs`)
+- `namecard/source/` — `back_clean.png`(원본 뒷면에서 글자만 지운 이미지) 위에 `back.html`로 글자를 얹어요. 글꼴은 `npm pack @fontsource/gowun-dodum@5 @fontsource/quicksand@5` 후 `f2/` 폴더에 풀어 두고 `r.mjs`로 PDF를 뽑아요
