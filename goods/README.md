@@ -48,3 +48,15 @@
 - `namecard/명함_가이드선_확인.png` — 인쇄소 가이드선(재단선·안전선)을 겹쳐 본 확인용 이미지
 - `namecard/명함_미리보기.png` — 앞뒤 미리보기
 - `namecard/source/` — `back_clean.png`(원본 뒷면에서 글자만 지운 이미지) 위에 `back.html`로 글자를 얹어요. 글꼴은 `npm pack @fontsource/gowun-dodum@5 @fontsource/quicksand@5` 후 `f2/` 폴더에 풀어 두고 `r.mjs`로 PDF를 뽑아요
+
+## 매장 서비스 인쇄물 (`service/`)
+
+| 파일 | 내용 |
+|---|---|
+| `스탬프카드_94x54_재단90x50.pdf` | 스탬프 카드 앞·뒤. 재단 90×50mm, 사방 2mm 여백. 도장 6칸(3개·6개째 보상) |
+| `꼬마손님_놀이판_A3.pdf` | 키즈 플레이스매트 A3 가로: 색칠하기, 미로 찾기, 숨은 문어 찾기(정답 9마리) |
+| `큰글씨메뉴판_요청카드_A4.pdf` | 1쪽 큰 글씨 메뉴판(가격 빈칸), 2쪽 요청 카드(체크해서 직원에게 보여 주기) |
+| `주차안내카드_94x54_재단90x50.pdf` | 주차 안내 카드 앞(약도)·뒤(로고). 재단 90×50mm, 사방 2mm 여백 |
+
+`png/`에 300dpi PNG가 있어요. 원본은 `source/`: 캐릭터는 `keyrings/source/art.py`의 벡터 그림을, 로고는 명함에서 딴 벡터 패스를 써요.
+`python3 stamp.py` 등으로 HTML을 만든 뒤 `node build.mjs <이름> <가로> <세로>`, `python3 fix.py`로 PDF 크기를 맞춰요(글꼴은 `fonts/noto`, `fonts/dodum`, `fonts/quick`).
