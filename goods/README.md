@@ -58,5 +58,5 @@
 | `큰글씨메뉴판_요청카드_A4.pdf` | 1쪽 큰 글씨 메뉴판(가격 빈칸), 2쪽 요청 카드(체크해서 직원에게 보여 주기) |
 | `주차안내카드_94x54_재단90x50.pdf` | 주차 안내 카드 앞(약도)·뒤(로고). 재단 90×50mm, 사방 2mm 여백 |
 
-`png/`에 300dpi PNG, `naver/`에 네이버 소식용 이미지(1080×1080, 1080×1350)가 있어요. 원본은 `source/`: 캐릭터는 `keyrings/source/art.py`의 벡터 그림을, 로고는 명함에서 딴 벡터 패스를 써요.
+`ideas/서비스메뉴_아이디어_1~2분.png`는 1~2분 서비스 메뉴 10가지 그림 시안(`source/dishes.py`), `png/`에 300dpi PNG, `naver/`에 네이버 소식용 이미지(1080×1080, 1080×1350)가 있어요. 원본은 `source/`: 캐릭터는 `keyrings/source/art.py`의 벡터 그림을, 로고는 명함에서 딴 벡터 패스를 써요.
 `python3 stamp.py` 등으로 HTML을 만든 뒤 `node build.mjs <이름> <가로> <세로>`, `python3 fix.py`로 PDF 크기를 맞춰요(글꼴은 `fonts/noto`, `fonts/dodum`, `fonts/quick`).
