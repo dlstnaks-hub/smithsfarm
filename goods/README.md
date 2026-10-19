@@ -66,3 +66,7 @@
 키링 캐릭터 + 파스텔 글자 + 검정 테두리 픽. 기본 4종: 축하해, 생일 축하해, 고마워요, 사랑해. 소개팅·결혼 5종(`source/picks_love.py`): 축 소개팅, 두근두근, 축 결혼, 결혼 축하해, 축 N주년. 전체 모음: `스프링픽_전체_9종.png`.
 `print/`는 인쇄소용 PDF(인쇄 레이어 + 마젠타 칼선 레이어, 칼선은 검정 테두리 바깥선), `png/`는 600dpi 투명 PNG.
 원본: `source/picks.py`(디자인) → `picks_shot.mjs`(600dpi PNG) → `picks_post.py`(테두리·칼선·PDF). 캐릭터는 `service/source/common.py`를 같이 써요.
+
+## 발렛파킹 포스터 (`valet/`)
+
+A2(420×594mm)·A1(594×841mm) 벡터 PDF. 재단 여백이 필요한 인쇄소용으로 사방 3mm 여백 버전도 있어요. `png/`는 150dpi PNG. 원본 `source/valet.py`(A2 기준 좌표, A1은 같은 그림을 비율대로 확대).
