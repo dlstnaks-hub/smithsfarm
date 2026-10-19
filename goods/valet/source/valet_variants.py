@@ -13,7 +13,7 @@ FR = '#111111'
 for key, (fam, wt, size, ls, css) in VARIANTS.items():
     t = f'<text x="210" y="76" text-anchor="middle" font-family="{fam}" font-weight="{wt}" font-size="{size}" fill="#ffffff" letter-spacing="{ls}">스미스씨네 농장</text>'
     art = re.sub(TITLE, t, base)
-    for name, w, h, bleed in (('A2', 420, 594, 0), ('A1', 594, 841, 0), ('A2_bleed', 420, 594, 3), ('A1_bleed', 594, 841, 3)):
+    for name, w, h, bleed in (('A3', 297, 420, 0), ('A2', 420, 594, 0), ('A1', 594, 841, 0), ('A3_bleed', 297, 420, 3), ('A2_bleed', 420, 594, 3), ('A1_bleed', 594, 841, 3)):
         W, H = w + 2*bleed, h + 2*bleed
         body = f'<div class="page"><svg class="sheet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}"><rect width="{W}" height="{H}" fill="{FR}"/><g transform="translate({bleed} {bleed}) scale({w/420:.6f})">{art}</g></svg></div>'
         open(f'valet_{key}_{name}.html', 'w').write(HEAD.format(w=W, h=H).replace('<style>', f'<link rel="stylesheet" href="{css}"><style>') + body + '</body></html>')
