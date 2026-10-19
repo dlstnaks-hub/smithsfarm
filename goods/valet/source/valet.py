@@ -11,7 +11,7 @@ def art():
 <circle cx="210" cy="190" r="54" fill="{BG}"/>
 <text x="210" y="216" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-weight="700" font-size="74" fill="{Y}">P</text>
 <text x="210" y="398" text-anchor="middle" class="k" font-size="72" fill="#ffffff" letter-spacing="-1">발렛파킹</text>
-<text x="210" y="438" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-weight="500" font-size="21" fill="#ffffff">Free Valet Parking</text>
+<text x="210" y="438" text-anchor="middle" font-family="Noto Sans KR, sans-serif" font-weight="500" font-size="21" fill="#ffffff">Valet Parking</text>
 <rect x="70" y="466" width="3" height="66" fill="#ffffff"/>
 <text x="86" y="490" font-family="Noto Sans KR, sans-serif" font-weight="500" font-size="22" fill="#ffffff">무료주차 (발렛비 3000원)</text>
 <text x="86" y="524" font-family="Noto Sans KR, sans-serif" font-weight="500" font-size="22" fill="#ffffff">입차 / 출차 도와드립니다</text>'''
