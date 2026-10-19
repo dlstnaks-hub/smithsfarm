@@ -60,3 +60,9 @@
 
 `ideas/서비스메뉴_아이디어_1~2분.png`는 1~2분 서비스 메뉴 10가지 그림 시안(`source/dishes.py`), `png/`에 300dpi PNG, `naver/`에 네이버 소식용 이미지(1080×1080, 1080×1350)가 있어요. 원본은 `source/`: 캐릭터는 `keyrings/source/art.py`의 벡터 그림을, 로고는 명함에서 딴 벡터 패스를 써요.
 `python3 stamp.py` 등으로 HTML을 만든 뒤 `node build.mjs <이름> <가로> <세로>`, `python3 fix.py`로 PDF 크기를 맞춰요(글꼴은 `fonts/noto`, `fonts/dodum`, `fonts/quick`).
+
+## 축하 스프링 픽 (`picks/`)
+
+키링 캐릭터 + 파스텔 글자 + 검정 테두리 픽 4종: 축하해(문어), 생일 축하해(당근), 고마워요(허수아비), 사랑해(당근·문어).
+`print/`는 인쇄소용 PDF(인쇄 레이어 + 마젠타 칼선 레이어, 칼선은 검정 테두리 바깥선), `png/`는 600dpi 투명 PNG.
+원본: `source/picks.py`(디자인) → `picks_shot.mjs`(600dpi PNG) → `picks_post.py`(테두리·칼선·PDF). 캐릭터는 `service/source/common.py`를 같이 써요.
