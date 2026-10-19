@@ -12,7 +12,13 @@ for key, label in names:
     m = a.filter(ImageFilter.GaussianBlur(r / 2)).point(lambda v: 255 if v > 6 else 0)        # dilate ~ r
     ImageDraw.floodfill(m, (0, 0), 128)                                                       # fill holes
     m = m.point(lambda v: 0 if v == 128 else 255)
+    # close narrow slits (word gaps) so the knife never has to cut into a thin notch
+    m = m.filter(ImageFilter.GaussianBlur(28)).point(lambda v: 255 if v > 20 else 0)
+    m = m.filter(ImageFilter.GaussianBlur(28)).point(lambda v: 255 if v > 235 else 0)
+    ImageDraw.floodfill(m, (0, 0), 128); m = m.point(lambda v: 0 if v == 128 else 255)
+    m = ImageChops.lighter(m, a.filter(ImageFilter.GaussianBlur(r / 2)).point(lambda v: 255 if v > 6 else 0))  # never thinner than the border
     m = m.filter(ImageFilter.GaussianBlur(10)).point(lambda v: 255 if v > 128 else 0)         # smooth the cut shape
+    assert m.getbbox()[0] > 0 and m.getbbox()[1] > 0 and m.getbbox()[2] < m.width and m.getbbox()[3] < m.height, key + ' touches the page edge'
     x0, y0, x1, y1 = m.getbbox(); pad = round(MARGIN / PX)
     box = (x0 - pad, y0 - pad, x1 + pad, y1 + pad)
     m, art = m.crop(box), art.crop(box)
