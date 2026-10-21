@@ -77,4 +77,4 @@ A2(420×594mm)·A1(594×841mm) 벡터 PDF. 재단 여백이 필요한 인쇄소�
 
 ## 키링 + 로고 배지 (`keyrings/logo_badge/`)
 
-키링 3종 가슴에 주황 SMITH's FARM 배지(아이콘 + 영문)를 넣은 버전. 칼선은 원래 키링과 같아서 `참고_칼선_*.jpg`도 그대로예요. 오프린트미 PDF 3개, `png/`·`jpg/` 600dpi, 원본 `source/badge.py`(키링 print SVG에 배지를 덧붙이고 stage3로 PDF 재생성).
+키링 3종에 흰색 SMITH's FARM 로고(모자 아이콘 + 영문, 상자·테두리 없음)를 넣은 버전: 허수아비 가슴(가로 셔츠), 당근 잎, 문어 머리 오른쪽 위. 칼선은 원래 키링과 같아서 `참고_칼선_*.jpg`도 그대로예요. 오프린트미 PDF 3개, `png/`·`jpg/` 600dpi, 원본 `source/badge.py`(키링 print SVG에 배지를 덧붙이고 stage3로 PDF 재생성).
