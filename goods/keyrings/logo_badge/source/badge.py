@@ -9,8 +9,8 @@ def badge(cx, cy, w, _unused=None):
     return (f'<svg x="{cx-w/2:.3f}" y="{cy-h/2:.3f}" width="{w:.3f}" height="{h:.3f}" viewBox="{LB[0]} {LB[1]} {LB[2]} {LB[3]}">'
             f'<path fill="#ffffff" fill-rule="evenodd" d="{MAIN}"/></svg>')
 SPOT = {   # (number of leading <g transform> wrappers around the art, logo centre and width in art units, unused)
-    'scarecrow': (3, 23.0, 32.95, 11.0, 0),
-    'carrot':    (1, 15.0, 12.2, 14.0, 0),
+    'scarecrow': (3, 23.0, 33.05, 13.2, 0),
+    'carrot':    (1, 15.0, 11.7, 19.0, 0),
     'octopus':   (3, 60.0, 29.0, 34.0, 0),
 }
 for n, (tf, cx, cy, w, sw) in SPOT.items():
