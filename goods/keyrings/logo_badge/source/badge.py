@@ -11,10 +11,12 @@ def badge(cx, cy, w, _unused=None):
 SPOT = {   # (number of leading <g transform> wrappers around the art, logo centre and width in art units, unused)
     'scarecrow': (3, 23.0, 32.95, 11.0, 0),
     'carrot':    (1, 15.0, 12.2, 14.0, 0),
-    'octopus':   (3, 70.5, 30.5, 25.0, 0),
+    'octopus':   (3, 60.0, 29.0, 34.0, 0),
 }
 for n, (tf, cx, cy, w, sw) in SPOT.items():
     p = f'{n}_print.svg'; s = open(p).read()
+    if n == 'octopus':   # the logo now sits across the top of the head; drop the glossy highlight under it
+        s = re.sub(r'<ellipse[^>]*fill-opacity="0.2"[^>]*/>', '', s)
     tf = ' '.join(re.findall(r'<g transform="([^"]+)"', s)[:tf])   # same wrappers as the art, read from the file
     i = s.rindex('</svg>')
     open(p, 'w').write(s[:i] + f'<g transform="{tf}">{badge(cx, cy, w, sw)}</g>' + s[i:])
