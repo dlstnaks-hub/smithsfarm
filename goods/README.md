@@ -10,7 +10,7 @@
 | `diary/print/스씨네그림일기_A5_테스트인쇄용_A4한장.pdf` | 집 프린터 시험 출력: A4 가로 한 장에 표지·속지, 가운데를 자르면 A5 두 장 |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용_A4양면.pdf` | 집 프린터 양면 시험 출력: A4 한장 파일(왼쪽 표지 · 오른쪽 속지)을 앞뒤 똑같이 2쪽. 양면 "짧은 쪽 넘기기"로 인쇄 (`source/make_duplex.py`) |
 | `diary/print/스씨네그림일기_오늘의그림_A4한면.pdf` | 오늘의 그림을 A4 가로 한 면 전체로 (`source/make_spread.py` → `make_spread.mjs`) |
-| `diary/print/스씨네그림일기_A4양면_잉크절약_색칠표지.pdf` | 잉크 절약판: 표지는 글자만 색, 나머지는 색칠용 선 그림(문어·아치·언덕), 속지 바탕 흰색 (`source/make_lowink.py`) |
+| `diary/print/스씨네그림일기_A4양면_잉크절약_색칠표지.pdf` | 잉크 절약판: 표지는 글자만 색, 나머지는 색칠용 선 그림(문어·아치·언덕), 속지 바탕 흰색·그림 칸 테두리는 얇은 검정 선 (`source/make_lowink.py`) |
 | `diary/print/스씨네그림일기_A4양면_표지+오늘의그림.pdf` | A4 양면 후 반으로 접기: 바깥 표지 2개, 펼친 안쪽 전체가 오늘의 그림 한 면 (`source/make_fold.py`) |
 | `diary/print/스씨네그림일기_A5_테스트인쇄용.pdf` | 집 프린터 시험 출력: 쪽마다 A4 한 장, 자를 선 바깥까지 색이 차서 흰 테두리 없음 |
 | `keyrings/print/ohprint_keyring_03_carrot_130.pdf` | 당근 키링 45.2×84.3mm (보내 주신 원본을 비율 그대로 키움) |
