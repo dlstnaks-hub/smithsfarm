@@ -33,8 +33,8 @@ def main():
         for cx in ('47', '73'):
             cover = cover.replace(f'<circle cx="{cx}" cy="48" r="6.4" fill="#ffffff"/>', f'<circle cx="{cx}" cy="48" r="6.4" fill="#ffffff" stroke="{D}" stroke-width="1.2"/>')
         cover = cover.replace('fill="#f2a08a" opacity="0.8"/>', f'fill="none" stroke="{D}" stroke-width="0.8" stroke-dasharray="1.6 1.2"/>')
-    # bottom band: green bar becomes a green rule, the text keeps the green colour
-    cover = cover.replace('<rect x="-6" y="232" width="200" height="37" fill="#2f6b3a"/>', '<line x1="40" y1="236" x2="156" y2="236" stroke="#2f6b3a" stroke-width="0.8"/>')
+    # bottom band: green bar is dropped, the text keeps the green colour
+    cover = cover.replace('<rect x="-6" y="232" width="200" height="37" fill="#2f6b3a"/>', '')
     cover = cover.replace('font-size="6" fill="#ffffff" letter-spacing="0.2">해운대', 'font-size="6" fill="#2f6b3a" letter-spacing="0.2">해운대')
     # inner page: white paper
     rest = rest.replace('fill="#fdfaf2"/>', 'fill="#ffffff"/>', 1)
