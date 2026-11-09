@@ -7,11 +7,11 @@ HAT, HAT2, SKIN, WOOD, SHOE = '#e2c48f', '#d6b67c', '#eeba8e', '#8a6a4a', '#3c32
 def picto(kind, c):
     if kind == 'men':
         return f'''<circle cx="105" cy="62" r="14" fill="{c}"/>
-<rect x="87" y="82" width="36" height="48" rx="8" fill="{c}"/>
-<rect x="74" y="84" width="10" height="42" rx="5" fill="{c}"/>
-<rect x="126" y="84" width="10" height="42" rx="5" fill="{c}"/>
-<rect x="88" y="122" width="15" height="38" rx="5" fill="{c}"/>
-<rect x="107" y="122" width="15" height="38" rx="5" fill="{c}"/>'''
+<rect x="82" y="82" width="46" height="50" rx="9" fill="{c}"/>
+<rect x="67.5" y="84" width="11" height="46" rx="5.5" fill="{c}"/>
+<rect x="131.5" y="84" width="11" height="46" rx="5.5" fill="{c}"/>
+<rect x="84.5" y="124" width="18.5" height="36" rx="5.5" fill="{c}"/>
+<rect x="107" y="124" width="18.5" height="36" rx="5.5" fill="{c}"/>'''
     return f'''<circle cx="105" cy="62" r="14" fill="{c}"/>
 <path d="M91 82 H119 L137 134 H73 Z" fill="{c}" stroke="{c}" stroke-width="7" stroke-linejoin="round"/>
 <rect x="72" y="84" width="9" height="34" rx="4.5" fill="{c}" transform="rotate(14 76 86)"/>
@@ -73,7 +73,7 @@ def page(kind):
 <line x1="80" y1="33" x2="130" y2="33" stroke="{LINE}" stroke-width="0.5"/>
 <g transform="translate(0 4)">{picto(kind, c)}</g>
 <text x="105" y="201" text-anchor="middle" class="ko" font-weight="800" font-size="27" fill="{c}" letter-spacing="1">{ko}</text>
-<text x="105" y="226" text-anchor="middle" class="fr" font-size="17" letter-spacing="4" fill="{INK}">{en}</text>
+<text x="{108 if kind == 'men' else 107}" y="227" text-anchor="middle" class="fr" font-size="{23 if kind == 'men' else 17}" letter-spacing="{6 if kind == 'men' else 4}" fill="{INK}">{en}</text>
 <line x1="24" y1="240" x2="128" y2="240" stroke="{LINE}" stroke-width="0.5"/>
 <text x="24" y="254" class="ko" font-weight="700" font-size="5.4" fill="{INK}">깨끗하게 사용해 주세요</text>
 <text x="24" y="262" class="fri" font-size="4.2" fill="{c}">Please keep it clean, thank you!</text>
