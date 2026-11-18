@@ -1,0 +1,10 @@
+import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1123, height: 794 }, deviceScaleFactor: 2 });
+await p.goto('http://localhost:8810/bill/sheets.html', { waitUntil: 'networkidle' });
+await p.evaluate(() => document.fonts.ready);
+await p.waitForTimeout(500);
+const pages = await p.$$('.page');
+for (let i = 0; i < pages.length; i++) await pages[i].screenshot({ path: `sheet_p${i + 1}.png` });
+await p.pdf({ path: 'sheets.pdf', width: '297mm', height: '210mm', printBackground: true, preferCSSPageSize: true });
+await b.close();
