@@ -27,8 +27,8 @@ content = (
  '/OC /L1 BDC\n'
  f'q {AW} 0 0 {AH} {X0} {PH-Y0-AH:.3f} cm /Art Do Q\nEMC\n'
  '/OC /L2 BDC\n'
- f'q {FLIP}\nq {WS} 0 0 {WS} {WTX} {WTY} cm\n1 1 1 RG {1.6/float(WS):.4f} w 1 j 1 1 1 rg\n{text_paths}\nB*\n'
- f'0.0784 0.0471 0.0392 rg\n{text_paths}\nf*\nQ\nQ\nEMC\n'
+ f'q {FLIP}\nq {WS} 0 0 {WS} {WTX} {WTY} cm\n0.0784 0.0471 0.0392 RG {1.1/float(WS):.4f} w 1 j 0.0784 0.0471 0.0392 rg\n{text_paths}\nB*\n'
+ f'1 0.98 0.949 rg\n{text_paths}\nf*\nQ\nQ\nEMC\n'
  '/OC /L3 BDC\n'
  f'q {FLIP}\nq {cut_m} cm\n0.0196 0.0039 0.0078 RG 1 w 0 J 0 j\n{ops(d("p0"))}\nS\nQ\n'
  '0.1373 0.098 0.0863 rg\n' + '\n'.join(ops(d(k)) for k in CAP) + '\nf\nQ\nEMC\n')

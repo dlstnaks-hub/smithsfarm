@@ -23,6 +23,7 @@ defs, body, _ = make3.v3d()
 vb = f'{make3.X0} {make3.Y0} {make3.X1-make3.X0} {make3.Y1-make3.Y0}'
 head = f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{vb}" width="250" height="494"><defs>{make3.defs_common()}{defs}</defs>{body}'
 shadow = f'<g clip-path="url(#U)"><g fill="#000" opacity=".35" filter="url(#soft2)" transform="translate(1.2 1.6)">{w("")}</g></g>'
-letters = w('fill="#fff" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"') + w('fill="#140c0a"')
+# looks like the A sheet: light letters with a thin dark rim
+letters = w('fill="#140c0a" stroke="#140c0a" stroke-width="1.1" stroke-linejoin="round"') + w('fill="#fffaf2"')
 open('art_3d_word_img.svg', 'w').write(head + shadow + '</svg>')
 open('art_3d_word.svg', 'w').write(head + shadow + letters + '</svg>')
